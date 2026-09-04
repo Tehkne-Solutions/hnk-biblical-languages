@@ -85,7 +85,8 @@ void main() {
     );
   });
 
-  testWidgets('daily session awards xp and shows a real summary', (tester) async {
+  testWidgets('daily session awards xp records history and shows summary',
+      (tester) async {
     final store = MemoryBiblicalProgressStore();
     final plan = buildDailySessionPlan(store.snapshot, targetSize: 1);
     final item = plan.items.single;
@@ -125,9 +126,14 @@ void main() {
     expect(find.text('+10'), findsOneWidget);
     expect(find.text('100%'), findsOneWidget);
     expect(store.snapshot.xp, 10);
+    expect(store.snapshot.practiceSessions, hasLength(1));
+    expect(store.snapshot.practiceSessions.single.itemCount, 1);
+    expect(store.snapshot.practiceSessions.single.accuracy, 100);
+    expect(store.snapshot.practiceSessions.single.xpGained, 10);
   });
 
-  testWidgets('drill home exposes the daily twelve entrypoint', (tester) async {
+  testWidgets('drill home exposes daily twelve and player progression',
+      (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: DrillModeScreen(progressStore: MemoryBiblicalProgressStore()),
@@ -139,5 +145,6 @@ void main() {
     expect(find.text('INICIAR 12/12'), findsOneWidget);
     expect(find.text('12 revisão · 0 novo · 0 reforço'), findsNothing);
     expect(find.text('0 revisão · 12 novo · 0 reforço'), findsOneWidget);
+    expect(find.byTooltip('Player Progression'), findsOneWidget);
   });
 }
