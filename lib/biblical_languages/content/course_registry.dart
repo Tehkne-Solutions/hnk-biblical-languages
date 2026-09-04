@@ -8,6 +8,7 @@ import 'lesson_006_corpo_e_acoes.dart';
 import 'lesson_007_natureza_e_criacao.dart';
 import 'lesson_008_reis_povos_lugares.dart';
 import 'lesson_009_sabedoria_e_lei.dart';
+import 'lesson_010_profetas_e_evangelhos.dart';
 
 final List<BiblicalLesson> implementedBiblicalLessons = List.unmodifiable([
   lesson001BereshitEnArche,
@@ -19,6 +20,7 @@ final List<BiblicalLesson> implementedBiblicalLessons = List.unmodifiable([
   lesson007NaturezaECriacao,
   lesson008ReisPovosLugares,
   lesson009SabedoriaELei,
+  lesson010ProfetasEEvangelhos,
 ]);
 
 BiblicalLesson? biblicalLessonByNumber(int number) {
