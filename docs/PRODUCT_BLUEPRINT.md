@@ -1,6 +1,6 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: FOUNDATION ACTIVE / LESSONS 001–009 IMPLEMENTED
+Status: FOUNDATION ACTIVE / LESSONS 001–010 IMPLEMENTED
 
 ## Thesis
 
@@ -36,25 +36,28 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 007 Gênesis 1:11–12 + João 1:3–5
 008 1 Samuel 8:5 + Mateus 2:1
 009 Salmo 1:1 + Mateus 5:17
+010 Isaías 40:3 + Marcos 1:2–3
 
-### Lesson 009 — Sabedoria e Lei
+### Lesson 010 — Profetas e Evangelhos
 
-- Salmo 1:1: três cláusulas negativas paralelas `לֹא הָלַךְ / לֹא עָמָד / לֹא יָשָׁב`.
-- `בַּעֲצַת` e `דֶרֶךְ חַטָּאִים`: relações nominais sapienciais.
-- Mateus 5:17: `Μὴ νομίσητε` como proibição com subjuntivo.
-- `καταλῦσαι` × `πληρῶσαι`: infinitivos aoristos ativos em contraste.
-- semântica verbal é mantida separada de conclusões doutrinárias sobre a Lei.
+- `קוֹרֵא`: particípio Qal masculino singular.
+- `פַּנּוּ` e `יַשְּׁרוּ`: imperativos Piel masculinos plurais.
+- `γέγραπται`: perfeito passivo indicativo.
+- `Ἑτοιμάσατε`: imperativo aoristo ativo 2pl.
+- `ποιεῖτε`: imperativo presente ativo 2pl.
+- Marcos 1:2–3 é ensinado como bloco de citação composto: correspondência direta com Isaías 40:3 concentra-se no v.3; o v.2 ecoa também Êxodo 23:20/Malaquias 3:1.
+- descrição textual precede implicações exegéticas.
 
 ## Progressão
 
-001 é aberta; cada Lesson seguinte exige a anterior. Níveis 010–012 permanecem visíveis como produção futura.
+001 é aberta; cada Lesson seguinte exige a anterior. Níveis 011–012 permanecem visíveis como produção futura.
 
 ## Métrica atual
 
 ```text
-9 Lessons × 72 drills = 648 drills
+10 Lessons × 72 drills = 720 drills
 ```
 
 ## Próximo slice
 
-Lesson 010 — Profetas e Evangelhos — Isaías 40:3 + Marcos 1:2–3.
+Lesson 011 — Leitura Bíblica Guiada — Gênesis 1–3 + João 1.
