@@ -24,7 +24,7 @@ Future<void> _scrollTo(WidgetTester tester, String title) async {
 }
 
 void main() {
-  for (var number = 2; number <= 7; number++) {
+  for (var number = 2; number <= implementedBiblicalLessons.length; number++) {
     final level = biblicalLanguagesCourseMap[number - 1];
     final lesson = biblicalLessonByNumber(number)!;
 
