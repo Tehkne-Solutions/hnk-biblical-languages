@@ -4,6 +4,7 @@ import '../content/course_map.dart';
 import '../content/lesson_001_bereshit_en_arche.dart';
 import '../content/lesson_002_identidade.dart';
 import '../content/lesson_003_ser_e_existir.dart';
+import '../content/lesson_004_casa_e_familia.dart';
 import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
 import 'biblical_lesson_screen.dart';
@@ -29,7 +30,7 @@ class BiblicalLanguagesCatalogScreen extends StatefulWidget {
 
 class _BiblicalLanguagesCatalogScreenState
     extends State<BiblicalLanguagesCatalogScreen> {
-  static const _implemented = 3;
+  static const _implemented = 4;
   BiblicalProgressSnapshot? _progress;
 
   @override
@@ -51,6 +52,7 @@ class _BiblicalLanguagesCatalogScreenState
         1 => lesson001BereshitEnArche,
         2 => lesson002Identidade,
         3 => lesson003SerEExistir,
+        4 => lesson004CasaEFamilia,
         _ => null,
       };
 
@@ -188,14 +190,14 @@ class _Hero extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '$completedLessons de 3 Lessons implementadas concluídas · 12 níveis no mapa total.',
+            '$completedLessons de 4 Lessons implementadas concluídas · 12 níveis no mapa total.',
             style: const TextStyle(color: Colors.white70),
           ),
           const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
-              value: completedLessons / 3.0,
+              value: completedLessons / 4.0,
               minHeight: 8,
               backgroundColor: Colors.white12,
               valueColor: const AlwaysStoppedAnimation<Color>(_gold),
