@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../content/course_map.dart';
-import '../content/lesson_001_bereshit_en_arche.dart';
-import '../content/lesson_002_identidade.dart';
-import '../content/lesson_003_ser_e_existir.dart';
-import '../content/lesson_004_casa_e_familia.dart';
-import '../content/lesson_005_tempo_e_dias.dart';
+import '../content/course_registry.dart';
 import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
 import 'biblical_lesson_screen.dart';
@@ -31,8 +27,9 @@ class BiblicalLanguagesCatalogScreen extends StatefulWidget {
 
 class _BiblicalLanguagesCatalogScreenState
     extends State<BiblicalLanguagesCatalogScreen> {
-  static const _implemented = 5;
   BiblicalProgressSnapshot? _progress;
+
+  int get _implemented => implementedBiblicalLessons.length;
 
   @override
   void initState() {
@@ -46,22 +43,12 @@ class _BiblicalLanguagesCatalogScreenState
     setState(() => _progress = snapshot);
   }
 
-  String _lessonId(int number) =>
-      'biblical_lesson_${number.toString().padLeft(3, '0')}';
-
-  BiblicalLesson? _lesson(int number) => switch (number) {
-        1 => lesson001BereshitEnArche,
-        2 => lesson002Identidade,
-        3 => lesson003SerEExistir,
-        4 => lesson004CasaEFamilia,
-        5 => lesson005TempoEDias,
-        _ => null,
-      };
+  BiblicalLesson? _lesson(int number) => biblicalLessonByNumber(number);
 
   bool _unlocked(BiblicalProgressSnapshot progress, int number) {
     if (number == 1) return true;
     if (number > _implemented) return false;
-    return progress.isCompleted(_lessonId(number - 1));
+    return progress.isCompleted(biblicalLessonId(number - 1));
   }
 
   Future<void> _open(int number) async {
@@ -96,7 +83,7 @@ class _BiblicalLanguagesCatalogScreenState
 
     final completedLessons = [
       for (var i = 1; i <= _implemented; i++)
-        if (progress.isCompleted(_lessonId(i))) i,
+        if (progress.isCompleted(biblicalLessonId(i))) i,
     ].length;
 
     return Scaffold(
@@ -109,7 +96,10 @@ class _BiblicalLanguagesCatalogScreenState
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 48),
         children: [
-          _Hero(completedLessons: completedLessons),
+          _Hero(
+            completedLessons: completedLessons,
+            implementedLessons: _implemented,
+          ),
           const SizedBox(height: 22),
           const Text(
             'OS 12 NÍVEIS',
@@ -138,9 +128,9 @@ class _BiblicalLanguagesCatalogScreenState
                 level: level,
                 implemented: level.number <= _implemented,
                 unlocked: _unlocked(progress, level.number),
-                completed: progress.isCompleted(_lessonId(level.number)),
+                completed: progress.isCompleted(biblicalLessonId(level.number)),
                 drillPosition: level.number <= _implemented
-                    ? progress.drillPositionFor(_lessonId(level.number)) + 1
+                    ? progress.drillPositionFor(biblicalLessonId(level.number)) + 1
                     : 0,
                 onTap: () => _open(level.number),
               ),
@@ -170,8 +160,13 @@ class _Brand extends StatelessWidget {
 }
 
 class _Hero extends StatelessWidget {
-  const _Hero({required this.completedLessons});
+  const _Hero({
+    required this.completedLessons,
+    required this.implementedLessons,
+  });
+
   final int completedLessons;
+  final int implementedLessons;
 
   @override
   Widget build(BuildContext context) {
@@ -192,14 +187,16 @@ class _Hero extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '$completedLessons de 5 Lessons implementadas concluídas · 12 níveis no mapa total.',
+            '$completedLessons de $implementedLessons Lessons implementadas concluídas · 12 níveis no mapa total.',
             style: const TextStyle(color: Colors.white70),
           ),
           const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
-              value: completedLessons / 5.0,
+              value: implementedLessons == 0
+                  ? 0
+                  : completedLessons / implementedLessons,
               minHeight: 8,
               backgroundColor: Colors.white12,
               valueColor: const AlwaysStoppedAnimation<Color>(_gold),
@@ -304,9 +301,22 @@ class _LevelCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 5),
-                    Text(level.anchor, style: TextStyle(color: enabled ? _blue : const Color(0xFF94A3B8), fontWeight: FontWeight.w700, fontSize: 12)),
+                    Text(
+                      level.anchor,
+                      style: TextStyle(
+                        color: enabled ? _blue : const Color(0xFF94A3B8),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
                     const SizedBox(height: 7),
-                    Text(level.focusPt, style: TextStyle(color: enabled ? const Color(0xFF475569) : const Color(0xFF94A3B8), height: 1.38)),
+                    Text(
+                      level.focusPt,
+                      style: TextStyle(
+                        color: enabled ? const Color(0xFF475569) : const Color(0xFF94A3B8),
+                        height: 1.38,
+                      ),
+                    ),
                     if (implemented) ...[
                       const SizedBox(height: 12),
                       LinearProgressIndicator(
