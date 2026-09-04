@@ -5,9 +5,10 @@ const _hebrewEdition = 'Open Scriptures Hebrew Bible / WLC base text';
 const _hebrewLicense = 'WLC text: Public Domain · OSHB morphology: CC BY 4.0';
 const _hebrewAttribution = 'Open Scriptures Hebrew Bible Project';
 const _greekEdition = 'SBL Greek New Testament (SBLGNT) v1.2';
-const _greekLicense = 'CC BY 4.0';
+const _greekLicense =
+    'SBLGNT electronic text: published SBLGNT EULA · MorphGNT parsing: CC BY-SA';
 const _greekAttribution =
-    'SBL Greek New Testament. Copyright © 2010 Society of Biblical Literature and Logos Bible Software.';
+    'SBL Greek New Testament, ed. Michael W. Holmes · MorphGNT SBLGNT Edition, ed. James Tauber.';
 
 const List<ScripturePassage> lesson003Scriptures = [
   ScripturePassage(
