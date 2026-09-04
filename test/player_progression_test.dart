@@ -141,6 +141,12 @@ void main() {
 
     expect(find.text('NÍVEL 4 · Escriba'), findsOneWidget);
     expect(find.text('META DIÁRIA · DAILY SESSION'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('CONQUISTAS'),
+      350,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('CONQUISTAS'), findsOneWidget);
 
     await tester.scrollUntilVisible(
@@ -148,6 +154,7 @@ void main() {
       400,
       scrollable: find.byType(Scrollable).first,
     );
+    expect(find.text('HISTÓRICO DE SESSÕES'), findsOneWidget);
     expect(find.text('12 itens · +120 XP'), findsOneWidget);
   });
 }
