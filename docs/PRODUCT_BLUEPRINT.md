@@ -1,56 +1,33 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: FOUNDATION ACTIVE / LESSONS 001–006 IMPLEMENTED
+Status: FOUNDATION ACTIVE / LESSONS 001–007 IMPLEMENTED
 
 ## Thesis
 
 ```text
-Português
-  ↓
-Esperanto — língua-ponte regular
-  ↓
-Hebraico Bíblico + Grego Koiné
-  ↓
-Leitura das Escrituras
-  ↓
-Exegese linguística responsável
+Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras → Exegese linguística responsável
 ```
 
 ## Product modes
 
 1. ACADEMY — progressão guiada.
-2. DRILL — recuperação ativa e prática rápida.
+2. DRILL — recuperação ativa.
 3. CODEX — lema, gloss, morfologia, proveniência e notas.
 4. SCRIPTURE — leitura bíblica guiada.
-5. QUEST — desafios de decodificação e mastery gates.
+5. QUEST — desafios de decodificação.
 
-## Numerology contract
-
-O mapa possui 12 níveis.
-
-Cada Lesson implementada usa:
+## Contrato numérico
 
 ```text
-12 structures × 6 cognitive variants = 72 drills
+12 níveis
+12 structures × 6 cognitive variants = 72 drills por Lesson
 ```
 
-Os seis modos são gerados por `content/drill_factory.dart`.
+## Runtime
 
-## Runtime e registry
+`BiblicalLessonScreen` é o motor reutilizável. `course_registry.dart` é a fonte única das Lessons implementadas. Lessons extensas podem separar corpora hebraico, grego e patterns em módulos menores e auditáveis.
 
-`BiblicalLessonScreen` é o motor reutilizável.
-`content/course_registry.dart` é a fonte única das Lessons implementadas e elimina contador/switch manual do catálogo.
-
-O runtime suporta:
-
-- Hebraico RTL;
-- Português, Esperanto e transliteração on/off;
-- Scripture cards;
-- CODEX por token;
-- 12 comparative patterns;
-- 72 drills com posição persistente;
-- Final Quest;
-- conclusão e desbloqueio da Lesson seguinte.
+O runtime suporta RTL, filtros de camadas, CODEX por token, 12 patterns, 72 drills persistentes, Final Quest e desbloqueio sequencial.
 
 ## 12 níveis
 
@@ -69,53 +46,44 @@ O runtime suporta:
 
 ## Conteúdo atual
 
-### 001 — Portal da Linguagem
-Gênesis 1:1 + João 1:1.
+- 001 — Gênesis 1:1 + João 1:1.
+- 002 — Êxodo 3:14 + João 1:6.
+- 003 — Gênesis 1:3 + João 1:3a–b.
+- 004 — Gênesis 12:1 + Lucas 1:27.
+- 005 — Gênesis 1:5 + Marcos 1:15.
+- 006 — Deuteronômio 6:5 + Marcos 12:30.
+- 007 — Gênesis 1:11–12 + João 1:3–5.
 
-### 002 — Identidade
-Êxodo 3:14 + João 1:6.
-
-### 003 — Ser e Existir
-Gênesis 1:3 + João 1:3a–b.
-
-### 004 — Casa e Família
-Gênesis 12:1 + Lucas 1:27.
-
-### 005 — Tempo e Dias
-Gênesis 1:5 + Marcos 1:15.
-
-Eixos: `יוֹם אֶחָד`, sequência com `וַיְהִי`, `καιρός`, perfeitos `πεπλήρωται` / `ἤγγικεν`, imperativos de resposta.
-
-### 006 — Corpo e Ações
-Deuteronômio 6:5 + Marcos 12:30.
+### Lesson 007 — Natureza e Criação
 
 Eixos:
 
-- `וְאָהַבְתָּ`: Qal perfeito 2ms em discurso de mandamento;
-- `ἀγαπήσεις`: futuro ativo indicativo 2sg com função de comando na citação;
-- `לֵבָב`, `נֶפֶשׁ`, `מְאֹד` preservados em seus campos próprios;
-- `καρδία`, `ψυχή`, `διάνοια`, `ἰσχύς` preservados como quatro domínios explícitos de Marcos;
-- `מְאֹדֶךָ` não reduzido morfologicamente ao substantivo português “força”;
-- nenhuma quarta categoria hebraica é inventada para fazer a lista coincidir com Marcos.
+- `תַּדְשֵׁא`: Hifil imperfeito jussivo 3fs;
+- `וַתּוֹצֵא`: Hifil consecutivo imperfeito 3fs;
+- convocação volitiva → realização narrativa;
+- `γέγονεν`: perfeito ativo;
+- `φαίνει`: presente ativo;
+- `κατέλαβεν`: aoristo ativo;
+- `καταλαμβάνω` permanece lexicalmente aberto a valores como apreender/alcançar/dominar;
+- a fronteira editorial de `ὃ γέγονεν` não vira conclusão exegética automática.
 
 ## Progressão
 
-001 é aberta. Cada Lesson 002–006 exige conclusão da imediatamente anterior. Níveis 7–12 permanecem visíveis como produção futura.
+001 é aberta. Cada Lesson 002–007 exige a conclusão da imediatamente anterior. Níveis 8–12 permanecem visíveis como produção futura.
 
 ## Métrica atual
 
 ```text
-6 Lessons × 72 drills = 432 drills
+7 Lessons × 72 drills = 504 drills
 ```
 
 ## Próximo slice
 
-Lesson 007 — Natureza e Criação:
+Lesson 008 — Reis, Povos e Lugares:
 
-- Gênesis 1 + João 1:3–5;
-- terra, céu, água, luz, vida e descrição;
-- substantivos concretos e relações de criação;
+- 1 Samuel 8:5 + Mateus 2:1;
+- títulos, nomes próprios, direção, território e relações políticas;
 - 12 estruturas;
 - 72 drills;
 - Final Quest;
-- desbloqueio após Lesson 006.
+- desbloqueio após Lesson 007.
