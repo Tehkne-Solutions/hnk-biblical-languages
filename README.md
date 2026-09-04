@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression e Learning Analytics.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics e Mastery Map.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -146,6 +146,27 @@ revisões vencidas continuam primeiro
 
 Assim, personalização nunca quebra unlock, ordem pedagógica ou revisão espaçada.
 
+### MASTERY MAP V1
+
+O Mastery Map transforma o mesmo progresso canônico numa visão **12 Lessons × 6 modos cognitivos**, sem novo schema e sem pontuação paralela.
+
+Cada uma das 72 células resume os 12 drills daquela Lesson/modo e mostra:
+
+- drills tentados / 12;
+- mastery médio apenas dos itens realmente tentados;
+- sinal de revisões vencidas;
+- idioma-alvo do modo: **HE / GR / EO**.
+
+Cada linha da Lesson também mostra cobertura da Lesson e mastery agregado. O cabeçalho resume cobertura global sobre os **864 drills**, mastery médio e total de revisões vencidas.
+
+Fluxo de navegação:
+
+```text
+DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → MASTERY MAP
+```
+
+O mapa é responsivo: os seis modos aparecem em duas linhas de três células por Lesson, evitando uma tabela horizontal extensa em mobile.
+
 ## Contrato editorial
 
 ```text
@@ -177,6 +198,7 @@ lib/
       daily_session_factory.dart
       player_progression.dart
       learning_analytics.dart
+      mastery_map.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -190,6 +212,7 @@ lib/
       daily_session_screen.dart
       player_progress_screen.dart
       learning_analytics_screen.dart
+      mastery_map_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -230,6 +253,8 @@ O `main` deve permanecer verde em:
 - Analytics por idioma e modo cognitivo;
 - reforço adaptativo preservando mastery e ordem pedagógica;
 - navegação Player Progression → Learning Analytics;
+- Mastery Map 12×6 com 864 drills canônicos;
+- navegação Learning Analytics → Mastery Map;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
