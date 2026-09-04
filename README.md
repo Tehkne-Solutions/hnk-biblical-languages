@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, feedback imediato, XP, streak, mastery e revisão espaçada.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery e revisão espaçada.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -56,10 +56,33 @@ Regras atuais:
 - mastery por drill: **0–5**;
 - resposta errada não avança a posição e entra imediatamente na fila de revisão;
 - resposta correta avança para o próximo drill;
+- revisar um drill antigo **nunca regride o cursor salvo da Lesson**;
 - intervalos de revisão por mastery: **1, 3, 7, 14 e 30 dias**;
 - streak é diário e reinicia após um dia sem prática;
 - saves antigos em schema v1 migram automaticamente para **schema v2**;
 - posição de estudo e mastery permanecem conceitos separados.
+
+### DAILY SESSION 12
+
+A rotina diária monta uma fila de **12 itens** usando o mesmo motor canônico do DRILL.
+
+Prioridade:
+
+```text
+1. revisões vencidas, ordenadas por dueAt
+2. conteúdo novo da primeira Lesson pendente, a partir do cursor salvo
+3. reforço por menor mastery quando ainda houver vagas
+```
+
+Regras:
+
+- conteúdo de Lesson ainda bloqueada nunca entra na sessão;
+- curso 12/12 concluído usa as vagas como reforço dos itens de menor mastery;
+- erro conta como tentativa, agenda revisão e exige retry;
+- somente o acerto conclui o item da sessão;
+- resumo final mostra **XP ganho, acurácia, itens com mastery aumentado e streak**;
+- a composição da sessão mostra quantos itens são revisão, novo conteúdo e reforço;
+- a sessão usa `recordDrillResult` e `buildDrillPracticeQuestion`, sem criar um segundo motor de aprendizagem.
 
 ## Contrato editorial
 
@@ -89,6 +112,7 @@ lib/
       course_registry.dart
       drill_factory.dart
       drill_practice_factory.dart
+      daily_session_factory.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -99,6 +123,7 @@ lib/
       biblical_languages_catalog_screen.dart
       drill_mode_screen.dart
       drill_practice_screen.dart
+      daily_session_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -129,6 +154,10 @@ O `main` deve permanecer verde em:
 - migração de progresso v1 → v2;
 - XP, streak, mastery e scheduling de revisão;
 - resposta errada → retry → resposta correta no runtime DRILL;
+- revisão antiga não regride o cursor da Lesson;
+- Daily Session 12: revisão → novo → reforço;
+- sessão nunca inclui Lesson bloqueada;
+- resumo de sessão com XP e acurácia reais;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
