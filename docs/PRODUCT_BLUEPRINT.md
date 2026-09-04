@@ -1,6 +1,6 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: FOUNDATION ACTIVE / LESSONS 001–004 IMPLEMENTED
+Status: FOUNDATION ACTIVE / LESSONS 001–005 IMPLEMENTED
 
 ## Thesis
 
@@ -71,29 +71,36 @@ O runtime suporta:
 ## Conteúdo atual
 
 ### Lesson 001 — Portal da Linguagem
-
 Gênesis 1:1 + João 1:1.
 
 ### Lesson 002 — Identidade
-
 Êxodo 3:14 + João 1:6.
 
 ### Lesson 003 — Ser e Existir
-
 Gênesis 1:3 + João 1:3a–b.
 
 ### Lesson 004 — Casa e Família
-
 Gênesis 12:1 + Lucas 1:27.
 
 Eixo gramatical:
+- construto hebraico;
+- sufixo possessivo;
+- genitivo grego;
+- particípio perfeito passivo + dativo;
+- mecanismos de relação nominal tratados como diferentes.
 
-- בֵּית como forma construta de בַּיִת;
-- אָבִיךָ com sufixo possessivo 2ms;
-- מִבֵּית אָבִיךָ como relação de origem + casa + possuidor;
-- οἴκου e τῆς παρθένου como genitivos;
-- ἐμνηστευμένην ἀνδρί como particípio perfeito passivo + dativo;
-- distinção explícita entre construto hebraico e genitivo grego.
+### Lesson 005 — Tempo e Dias
+Gênesis 1:5 + Marcos 1:15.
+
+Eixo gramatical:
+- dia, noite, tarde e manhã;
+- `יוֹם אֶחָד` preservado literalmente como “dia um” antes da tradução natural “primeiro dia”;
+- sequência narrativa com `וַיְהִי`;
+- `καιρός` como tempo/ocasião apropriada, não mera duração;
+- `πεπλήρωται` como perfeito médio/passivo;
+- `ἤγγικεν` como perfeito ativo;
+- imperativos `μετανοεῖτε` e `πιστεύετε`;
+- aspecto verbal separado de inferência teológica.
 
 ## Progressão
 
@@ -101,22 +108,23 @@ Lesson 001 é aberta.
 Lesson 002 exige conclusão da 001.
 Lesson 003 exige conclusão da 002.
 Lesson 004 exige conclusão da 003.
-Níveis 5–12 permanecem visíveis, mas não são apresentados como conteúdo já implementado.
+Lesson 005 exige conclusão da 004.
+Níveis 6–12 permanecem visíveis, mas não são apresentados como conteúdo já implementado.
 
 ## Métrica atual
 
 ```text
-4 Lessons × 72 drills = 288 drills
+5 Lessons × 72 drills = 360 drills
 ```
 
 ## Próximo slice
 
-Lesson 005 — Tempo e Dias:
+Lesson 006 — Corpo e Ações:
 
-- Gênesis 1:5 + Marcos 1:15;
-- dias, números e marcadores temporais;
-- sequência narrativa e aspecto verbal;
+- Deuteronômio 6:5 + Marcos 12:30;
+- verbos frequentes, comandos e partes do corpo;
+- ação, agência e imperativos;
 - 12 estruturas;
 - 72 drills;
 - Final Quest;
-- desbloqueio após Lesson 004.
+- desbloqueio após Lesson 005.
