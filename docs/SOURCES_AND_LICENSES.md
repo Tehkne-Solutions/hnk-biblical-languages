@@ -26,23 +26,31 @@ Rules:
 
 ## Koine Greek New Testament
 
-Primary source:
+Primary text:
 
 - SBL Greek New Testament (SBLGNT), project baseline v1.2
 
-License:
+Morphological support:
 
-- CC BY 4.0
+- MorphGNT: SBLGNT Edition
+
+Licensing:
+
+- SBLGNT electronic text: governed by the published SBLGNT End-User License Agreement / permission terms; it must not be mislabeled as CC BY 4.0.
+- MorphGNT parsing and lemmatization: CC BY-SA.
 
 Attribution:
 
-> SBL Greek New Testament. Copyright © 2010 Society of Biblical Literature and Logos Bible Software.
+> SBL Greek New Testament, ed. Michael W. Holmes, Society of Biblical Literature / Logos Bible Software.
+
+> MorphGNT: SBLGNT Edition, ed. James Tauber.
 
 Rules:
 
 - Every quoted passage declares edition, license and attribution.
+- Morphology derived from MorphGNT must retain compatible attribution.
 - Course-authored morphology must remain independently reviewable.
-- No proprietary lexicon prose or critical apparatus is copied without a compatible license.
+- No proprietary lexicon prose or critical apparatus is copied without compatible permission.
 
 ## Septuagint bridge forms
 
@@ -73,17 +81,23 @@ source text
 
 Lesson 001:
 - Gênesis 1:1 — OSHB / WLC.
-- João 1:1 — SBLGNT.
+- João 1:1 — SBLGNT; morphology reviewed against MorphGNT where used.
 
 Lesson 002:
 - Êxodo 3:14 — OSHB / WLC.
-- João 1:6 — SBLGNT.
+- João 1:6 — SBLGNT; morphology reviewed against MorphGNT where used.
 - `אֶהְיֶה` remains morphologically Qal imperfect 1cs even when the natural Portuguese layer uses the traditional “EU SOU”.
 
 Lesson 003:
 - Gênesis 1:3 — OSHB / WLC.
-- João 1:3a–b — SBLGNT.
+- João 1:3a–b — SBLGNT; morphology reviewed against MorphGNT where used.
 - `יְהִי` is treated as jussive and `וַיְהִי` as a narrative consecutive form; the short LXX bridge is labeled as such.
+
+Lesson 004:
+- Gênesis 12:1 — OSHB / WLC.
+- Lucas 1:27 — SBLGNT; morphology reviewed against MorphGNT.
+- `מִבֵּית אָבִיךָ` is used to introduce construct relationship + possessive suffix.
+- `ἐξ οἴκου Δαυίδ` and `τὸ ὄνομα τῆς παρθένου` are used to introduce Greek genitive relations without claiming structural identity with Hebrew construct syntax.
 
 ## Publication gate
 
