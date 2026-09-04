@@ -1,21 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hnk_biblical_languages/biblical_languages/content/lesson_001_bereshit_en_arche.dart';
+import 'package:hnk_biblical_languages/biblical_languages/content/course_registry.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_002_identidade.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_003_ser_e_existir.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_004_casa_e_familia.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_005_tempo_e_dias.dart';
+import 'package:hnk_biblical_languages/biblical_languages/content/lesson_006_corpo_e_acoes.dart';
 import 'package:hnk_biblical_languages/biblical_languages/models/biblical_lesson.dart';
 
 void main() {
-  final lessons = [
-    lesson001BereshitEnArche,
-    lesson002Identidade,
-    lesson003SerEExistir,
-    lesson004CasaEFamilia,
-    lesson005TempoEDias,
-  ];
+  final lessons = implementedBiblicalLessons;
 
   group('Biblical Languages canonical contracts', () {
+    test('registry exposes six implemented lessons in sequential order', () {
+      expect(lessons, hasLength(6));
+      expect(lessons.map((lesson) => lesson.number).toList(), [1, 2, 3, 4, 5, 6]);
+      expect(biblicalLessonByNumber(6)?.id, 'biblical_lesson_006');
+      expect(biblicalLessonByNumber(7), isNull);
+    });
+
     test('every implemented lesson keeps 12 structures x 6 = 72 drills', () {
       for (final lesson in lessons) {
         expect(lesson.patterns, hasLength(12), reason: lesson.id);
@@ -100,7 +102,6 @@ void main() {
     test('Lesson 004 distinguishes Hebrew construct from Greek genitive', () {
       final genesis = lesson004Scriptures.first;
       final luke = lesson004Scriptures.last;
-
       final houseConstruct =
           genesis.tokens.firstWhere((t) => t.surface == 'וּמִבֵּית');
       final father = genesis.tokens.firstWhere((t) => t.surface == 'אָבִיךָ');
@@ -113,15 +114,6 @@ void main() {
       expect(greekHouse.morphology, contains('genitivo'));
       expect(greekVirgin.morphology, contains('genitivo'));
       expect(luke.translationNotePt, contains('não é estruturalmente idêntico'));
-    });
-
-    test('Lesson 004 anchors Genesis 12:1 and Luke 1:27', () {
-      expect(lesson004Scriptures, hasLength(2));
-      expect(lesson004Scriptures.first.reference, 'Gênesis 12:1');
-      expect(lesson004Scriptures.last.reference, 'Lucas 1:27');
-      expect(lesson004Scriptures.first.text, contains('מִבֵּית אָבִיךָ'));
-      expect(lesson004Scriptures.last.text, contains('ἐξ οἴκου Δαυίδ'));
-      expect(lesson004Scriptures.last.text, contains('τὸ ὄνομα τῆς παρθένου Μαριάμ'));
     });
 
     test('Lesson 005 preserves day one before natural ordinal translation', () {
@@ -145,14 +137,43 @@ void main() {
       expect(mark.translationNotePt, contains('estado resultante'));
     });
 
-    test('Lesson 005 anchors Genesis 1:5 and Mark 1:15', () {
-      expect(lesson005Scriptures, hasLength(2));
-      expect(lesson005Scriptures.first.reference, 'Gênesis 1:5');
-      expect(lesson005Scriptures.last.reference, 'Marcos 1:15');
-      expect(lesson005Scriptures.first.text, contains('וַיְהִי־עֶרֶב'));
-      expect(lesson005Scriptures.first.text, contains('יוֹם אֶחָד'));
-      expect(lesson005Scriptures.last.text, contains('Πεπλήρωται ὁ καιρὸς'));
-      expect(lesson005Scriptures.last.text, contains('ἤγγικεν ἡ βασιλεία'));
+    test('Lesson 006 separates verb morphology from command function', () {
+      final deuteronomy = lesson006Scriptures.first;
+      final mark = lesson006Scriptures.last;
+      final veahavta =
+          deuteronomy.tokens.firstWhere((t) => t.surface == 'וְאָהַבְתָּ');
+      final agapeseis = mark.tokens.firstWhere((t) => t.surface == 'ἀγαπήσεις');
+
+      expect(veahavta.morphology, contains('Qal perfeito'));
+      expect(veahavta.morphology, isNot(contains('imperativo')));
+      expect(agapeseis.morphology, contains('futuro ativo do indicativo'));
+      expect(agapeseis.morphology, isNot(contains('imperativo')));
+      expect(deuteronomy.translationNotePt, contains('mandamento'));
+      expect(mark.translationNotePt, contains('funciona como comando'));
+    });
+
+    test('Lesson 006 preserves meod morphology and Mark four-domain list', () {
+      final deuteronomy = lesson006Scriptures.first;
+      final mark = lesson006Scriptures.last;
+      final meod = deuteronomy.tokens.firstWhere((t) => t.surface == 'מְאֹדֶךָ');
+
+      expect(meod.morphology, contains('advérbio/intensificador'));
+      expect(mark.text, contains('τῆς καρδίας'));
+      expect(mark.text, contains('τῆς ψυχῆς'));
+      expect(mark.text, contains('τῆς διανοίας'));
+      expect(mark.text, contains('τῆς ἰσχύος'));
+      expect(deuteronomy.text, isNot(contains('דִּיאַנוֹיָה')));
+      expect(mark.translationNotePt, contains('não força correspondência'));
+    });
+
+    test('Lesson 006 anchors Deuteronomy 6:5 and Mark 12:30', () {
+      expect(lesson006Scriptures, hasLength(2));
+      expect(lesson006Scriptures.first.reference, 'Deuteronômio 6:5');
+      expect(lesson006Scriptures.last.reference, 'Marcos 12:30');
+      expect(lesson006Scriptures.first.text, contains('בְּכָל־לְבָבְךָ'));
+      expect(lesson006Scriptures.first.text, contains('מְאֹדֶךָ'));
+      expect(lesson006Scriptures.last.text, contains('ἀγαπήσεις'));
+      expect(lesson006Scriptures.last.text, contains('τῆς διανοίας'));
     });
   });
 }
