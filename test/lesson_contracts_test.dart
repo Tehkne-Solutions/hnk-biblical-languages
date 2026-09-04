@@ -3,6 +3,7 @@ import 'package:hnk_biblical_languages/biblical_languages/content/lesson_001_ber
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_002_identidade.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_003_ser_e_existir.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_004_casa_e_familia.dart';
+import 'package:hnk_biblical_languages/biblical_languages/content/lesson_005_tempo_e_dias.dart';
 import 'package:hnk_biblical_languages/biblical_languages/models/biblical_lesson.dart';
 
 void main() {
@@ -11,6 +12,7 @@ void main() {
     lesson002Identidade,
     lesson003SerEExistir,
     lesson004CasaEFamilia,
+    lesson005TempoEDias,
   ];
 
   group('Biblical Languages canonical contracts', () {
@@ -120,6 +122,37 @@ void main() {
       expect(lesson004Scriptures.first.text, contains('מִבֵּית אָבִיךָ'));
       expect(lesson004Scriptures.last.text, contains('ἐξ οἴκου Δαυίδ'));
       expect(lesson004Scriptures.last.text, contains('τὸ ὄνομα τῆς παρθένου Μαριάμ'));
+    });
+
+    test('Lesson 005 preserves day one before natural ordinal translation', () {
+      final genesis = lesson005Scriptures.first;
+      final dayOne = genesis.tokens.firstWhere((t) => t.surface == 'יוֹם אֶחָד');
+      expect(dayOne.morphology, contains('numeral masculino singular'));
+      expect(genesis.literalPt, contains('dia um'));
+      expect(genesis.naturalPt, contains('primeiro dia'));
+      expect(genesis.translationNotePt, contains('cardinal'));
+    });
+
+    test('Lesson 005 distinguishes the two Greek perfect forms', () {
+      final mark = lesson005Scriptures.last;
+      final fulfilled = mark.tokens.firstWhere((t) => t.surface == 'Πεπλήρωται');
+      final drawnNear = mark.tokens.firstWhere((t) => t.surface == 'ἤγγικεν');
+      final kairos = mark.tokens.firstWhere((t) => t.surface == 'ὁ καιρὸς');
+
+      expect(fulfilled.morphology, contains('perfeito médio/passivo'));
+      expect(drawnNear.morphology, contains('perfeito ativo'));
+      expect(kairos.glossPt, contains('ocasião'));
+      expect(mark.translationNotePt, contains('estado resultante'));
+    });
+
+    test('Lesson 005 anchors Genesis 1:5 and Mark 1:15', () {
+      expect(lesson005Scriptures, hasLength(2));
+      expect(lesson005Scriptures.first.reference, 'Gênesis 1:5');
+      expect(lesson005Scriptures.last.reference, 'Marcos 1:15');
+      expect(lesson005Scriptures.first.text, contains('וַיְהִי־עֶרֶב'));
+      expect(lesson005Scriptures.first.text, contains('יוֹם אֶחָד'));
+      expect(lesson005Scriptures.last.text, contains('Πεπλήρωται ὁ καιρὸς'));
+      expect(lesson005Scriptures.last.text, contains('ἤγγικεν ἡ βασιλεία'));
     });
   });
 }
