@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../content/course_registry.dart';
 import '../content/drill_factory.dart';
+import '../content/drill_practice_factory.dart';
 import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
 import 'biblical_lesson_screen.dart';
+import 'drill_practice_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
 const _gold = Color(0xFFFFD166);
+const _red = Color(0xFFE63946);
 
 class DrillModeScreen extends StatefulWidget {
   const DrillModeScreen({
@@ -44,6 +47,24 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
     return implementedBiblicalLessons.last;
   }
 
+  Future<void> _openPractice(
+    BiblicalLesson lesson,
+    BiblicalProgressSnapshot progress, {
+    int? zeroBasedIndex,
+  }) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => DrillPracticeScreen(
+          lesson: lesson,
+          initialIndex: zeroBasedIndex ?? progress.drillPositionFor(lesson.id),
+          progressStore: widget.progressStore,
+          initialProgress: progress,
+        ),
+      ),
+    );
+    await _reload();
+  }
+
   Future<void> _openLesson(
     BiblicalLesson lesson,
     BiblicalProgressSnapshot progress,
@@ -70,6 +91,7 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
     final lesson = _resumeLesson(progress);
     final position = progress.drillPositionFor(lesson.id) + 1;
     final completed = progress.completedLessonIds.length;
+    final reviewQueue = buildDueReviewQueue(progress);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -81,6 +103,24 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
         children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _MetricCard(label: 'XP', value: '${progress.xp}', icon: Icons.bolt_rounded),
+              _MetricCard(
+                label: 'STREAK',
+                value: '${progress.streakDays} d',
+                icon: Icons.local_fire_department_rounded,
+              ),
+              _MetricCard(
+                label: 'REVISÕES',
+                value: '${reviewQueue.length}',
+                icon: Icons.replay_circle_filled_rounded,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
@@ -101,8 +141,8 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                 const SizedBox(height: 10),
                 Text(
                   completed == implementedBiblicalLessons.length
-                      ? 'Curso concluído. Continue refinando a leitura.'
-                      : 'Retome exatamente de onde parou.',
+                      ? 'Curso concluído. Continue consolidando mastery.'
+                      : 'Responda. Receba feedback. Consolide.',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -116,15 +156,86 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                   style: const TextStyle(color: Colors.white70, height: 1.45),
                 ),
                 const SizedBox(height: 18),
-                FilledButton.icon(
-                  onPressed: () => _openLesson(lesson, progress),
-                  style: FilledButton.styleFrom(backgroundColor: _blue),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('RETOMAR DRILL'),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: () => _openPractice(lesson, progress),
+                      style: FilledButton.styleFrom(backgroundColor: _blue),
+                      icon: const Icon(Icons.play_arrow_rounded),
+                      label: const Text('RETOMAR PRÁTICA'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _openLesson(lesson, progress),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white54),
+                      ),
+                      icon: const Icon(Icons.menu_book_rounded),
+                      label: const Text('ESTUDAR LESSON'),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'FILA DE REVISÃO',
+                  style: TextStyle(
+                    color: _blue,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              if (reviewQueue.isNotEmpty)
+                Text(
+                  '${reviewQueue.length} vencida${reviewQueue.length == 1 ? '' : 's'}',
+                  style: const TextStyle(color: _red, fontWeight: FontWeight.w800),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          if (reviewQueue.isEmpty)
+            const Card(
+              elevation: 0,
+              child: ListTile(
+                leading: Icon(Icons.check_circle_rounded, color: _blue),
+                title: Text(
+                  'Nenhuma revisão vencida agora.',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
+                subtitle: Text('Os acertos retornam em 1, 3, 7, 14 e 30 dias conforme o mastery.'),
+              ),
+            )
+          else
+            for (final entry in reviewQueue.take(8))
+              Card(
+                elevation: 0,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: const Color(0xFFFFF1F2),
+                    foregroundColor: _red,
+                    child: Text('${entry.zeroBasedIndex + 1}'),
+                  ),
+                  title: Text(
+                    'Lesson ${entry.lesson.number.toString().padLeft(3, '0')} · Drill ${entry.zeroBasedIndex + 1}',
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                  subtitle: Text('Mastery ${progress.masteryFor(entry.drill.id)}/5 · revisão disponível'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => _openPractice(
+                    entry.lesson,
+                    progress,
+                    zeroBasedIndex: entry.zeroBasedIndex,
+                  ),
+                ),
+              ),
           const SizedBox(height: 24),
           const Text(
             '6 MODOS COGNITIVOS',
@@ -150,6 +261,53 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  const _MetricCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 104),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: _blue, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Color(0xFF64748B),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
+                ),
+              ),
+              Text(value, style: const TextStyle(color: _ink, fontWeight: FontWeight.w900)),
+            ],
+          ),
         ],
       ),
     );
