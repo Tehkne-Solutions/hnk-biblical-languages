@@ -55,6 +55,19 @@ void main() {
       }
     });
 
+    test('Greek source metadata does not mislabel SBLGNT as CC BY 4.0', () {
+      for (final lesson in lessons) {
+        final greek = lesson.scriptures
+            .where((p) => p.language == BiblicalLanguage.koineGreek);
+        expect(greek, isNotEmpty, reason: lesson.id);
+        for (final passage in greek) {
+          expect(passage.sourceEdition, contains('SBLGNT'));
+          expect(passage.sourceLicense, isNot(equals('CC BY 4.0')));
+          expect(passage.sourceLicense, contains('SBLGNT'));
+        }
+      }
+    });
+
     test('Hebrew source passages render RTL', () {
       for (final lesson in lessons) {
         final hebrew = lesson.scriptures
