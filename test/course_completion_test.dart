@@ -59,6 +59,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Concluir Lesson 012'), findsOneWidget);
+    await _scrollUntil(
+      tester,
+      find.text('Concluir Lesson 012'),
+      delta: 320,
+    );
     await tester.tap(find.text('Concluir Lesson 012'));
     await tester.pumpAndSettle();
 
