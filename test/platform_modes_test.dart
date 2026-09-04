@@ -4,6 +4,15 @@ import 'package:hnk_biblical_languages/biblical_languages/content/biblical_libra
 import 'package:hnk_biblical_languages/biblical_languages/progress/biblical_progress.dart';
 import 'package:hnk_biblical_languages/biblical_languages/ui/biblical_languages_platform_shell.dart';
 
+Future<void> _scrollUntil(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    420,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   test('canonical scripture library deduplicates reused passages', () {
     final passages = buildCanonicalScriptureLibrary();
@@ -30,6 +39,8 @@ void main() {
 
     await tester.tap(find.text('Drill'));
     await tester.pumpAndSettle();
+    expect(find.text('RETOMAR PRÁTICA'), findsOneWidget);
+    await _scrollUntil(tester, find.text('6 MODOS COGNITIVOS'));
     expect(find.text('6 MODOS COGNITIVOS'), findsOneWidget);
 
     await tester.tap(find.text('Codex'));
