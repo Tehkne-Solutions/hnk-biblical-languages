@@ -99,6 +99,13 @@ Lesson 004:
 - `מִבֵּית אָבִיךָ` is used to introduce construct relationship + possessive suffix.
 - `ἐξ οἴκου Δαυίδ` and `τὸ ὄνομα τῆς παρθένου` are used to introduce Greek genitive relations without claiming structural identity with Hebrew construct syntax.
 
+Lesson 005:
+- Gênesis 1:5 — OSHB / WLC.
+- Marcos 1:15 — SBLGNT; morphology reviewed against MorphGNT.
+- `יוֹם אֶחָד` is preserved in the literal layer as “dia um”; “primeiro dia” belongs to the natural translation layer.
+- `πεπλήρωται` is treated as perfect middle/passive indicative 3sg and `ἤγγικεν` as perfect active indicative 3sg.
+- `καιρός` is presented as time/occasion appropriate or decisive according to context, not as an automatic theological category.
+
 ## Publication gate
 
 A Lesson is not publication-ready if any quoted source passage lacks `sourceEdition`, `sourceLicense` or `sourceAttribution`.
