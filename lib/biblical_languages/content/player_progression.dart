@@ -80,7 +80,9 @@ PlayerProgressMetrics buildPlayerProgressMetrics(
   final span = nextRank == null ? 1 : nextRank.minXp - rank.minXp;
   final rankProgress = nextRank == null
       ? 1.0
-      : ((progress.xp - rank.minXp) / span).clamp(0.0, 1.0);
+      : ((progress.xp - rank.minXp) / span)
+          .clamp(0.0, 1.0)
+          .toDouble();
   final masteryOne = _masteryCount(progress, 1);
   final masteryThree = _masteryCount(progress, 3);
   final masteryFive = _masteryCount(progress, 5);
@@ -177,8 +179,9 @@ PlayerProgressMetrics buildPlayerProgressMetrics(
     rank: rank,
     nextRank: nextRank,
     rankProgress: rankProgress,
-    xpToNextRank:
-        nextRank == null ? 0 : (nextRank.minXp - progress.xp).clamp(0, 1 << 31),
+    xpToNextRank: nextRank == null
+        ? 0
+        : (nextRank.minXp - progress.xp).clamp(0, 1 << 31).toInt(),
     dailyGoalCompleted: progress.dailyGoalCompletedOn(reference),
     sessionsCompleted: progress.practiceSessions.length,
     masteryOneCount: masteryOne,
