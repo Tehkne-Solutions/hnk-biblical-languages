@@ -28,12 +28,38 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — retoma automaticamente a primeira Lesson pendente e sua posição de 1/72 a 72/72.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, feedback imediato, XP, streak, mastery e revisão espaçada.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
 
 A biblioteca compartilhada é produzida por `content/biblical_library.dart`, evitando duplicar textos e tokens entre modos.
+
+### DRILL INTERACTIVE V1
+
+O DRILL não é mais apenas navegação para a Lesson. Cada atividade gera uma questão determinística a partir das próprias quatro camadas linguísticas da estrutura canônica.
+
+```text
+Drill canônico
+→ pista em Português
+→ alvo: Esperanto / Hebraico Bíblico / Grego Koiné
+→ alternativas derivadas das estruturas da própria Lesson
+→ resposta
+→ feedback imediato
+→ mastery / XP / streak
+→ revisão espaçada
+```
+
+Regras atuais:
+
+- resposta correta: **+10 XP**;
+- mastery por drill: **0–5**;
+- resposta errada não avança a posição e entra imediatamente na fila de revisão;
+- resposta correta avança para o próximo drill;
+- intervalos de revisão por mastery: **1, 3, 7, 14 e 30 dias**;
+- streak é diário e reinicia após um dia sem prática;
+- saves antigos em schema v1 migram automaticamente para **schema v2**;
+- posição de estudo e mastery permanecem conceitos separados.
 
 ## Contrato editorial
 
@@ -62,14 +88,17 @@ lib/
       course_map.dart
       course_registry.dart
       drill_factory.dart
+      drill_practice_factory.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
     progress/
+      biblical_progress.dart
     ui/
       biblical_languages_platform_shell.dart
       biblical_languages_catalog_screen.dart
       drill_mode_screen.dart
+      drill_practice_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -97,6 +126,9 @@ O `main` deve permanecer verde em:
 - `flutter analyze --no-fatal-infos`;
 - contratos linguísticos/proveniência;
 - progressão e persistência;
+- migração de progresso v1 → v2;
+- XP, streak, mastery e scheduling de revisão;
+- resposta errada → retry → resposta correta no runtime DRILL;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
