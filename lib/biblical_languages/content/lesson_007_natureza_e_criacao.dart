@@ -77,21 +77,24 @@ const List<ScripturePassage> lesson007Scriptures = [
         transliteration: 'etz peri',
         glossPt: 'árvore de fruto / árvore frutífera',
         lemma: 'עֵץ + פְּרִי',
-        morphology: 'substantivo masculino singular em construto + substantivo masculino singular',
+        morphology:
+            'substantivo masculino singular em construto + substantivo masculino singular',
       ),
       ScriptureToken(
         surface: 'עֹשֶׂה פְּרִי',
         transliteration: 'oseh peri',
         glossPt: 'fazendo / produzindo fruto',
         lemma: 'עשה + פְּרִי',
-        morphology: 'Qal particípio masculino singular + substantivo masculino singular',
+        morphology:
+            'Qal particípio masculino singular + substantivo masculino singular',
       ),
       ScriptureToken(
         surface: 'לְמִינוֹ',
         transliteration: 'lemino',
         glossPt: 'segundo a sua espécie',
         lemma: 'לְ + מִין',
-        morphology: 'preposição ל + substantivo masculino singular + sufixo possessivo 3ms',
+        morphology:
+            'preposição ל + substantivo masculino singular + sufixo possessivo 3ms',
       ),
       ScriptureToken(
         surface: 'וַיְהִי־כֵן',
@@ -105,7 +108,8 @@ const List<ScripturePassage> lesson007Scriptures = [
         transliteration: 'vattotse',
         glossPt: 'e fez sair / e produziu',
         lemma: 'יצא',
-        morphology: 'Hifil consecutivo imperfeito, 3ª pessoa feminina singular',
+        morphology:
+            'Hifil consecutivo imperfeito, 3ª pessoa feminina singular',
       ),
       ScriptureToken(
         surface: 'כִּי־טוֹב',
@@ -121,4 +125,4 @@ const List<ScripturePassage> lesson007Scriptures = [
     reference: 'João 1:3–5',
     language: BiblicalLanguage.koineGreek,
     text:
-        'πάντα δι’ αὐτοῦ ἐγένετο, καὶ χωρὶς αὐτοῦ ἐγένετο οὐδὲ ἕν. ὃ γέγονεν ἐν αὐτῷ ζωὴ ἦν, καὶ
+        'πάντα δι’ αὐτοῦ ἐγένετο, καὶ χωρὶς αὐτοῦ ἐγένετο οὐδὲ ἕν. ὃ γέγονεν ἐν αὐτῷ ζωὴ ἦν
