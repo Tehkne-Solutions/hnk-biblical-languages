@@ -38,13 +38,14 @@ source text → transliteration → lemma/gloss → morphology → literal → n
 007 Gênesis 1:11–12 — OSHB/WLC; João 1:3–5 — SBLGNT/MorphGNT.
 008 1 Samuel 8:5 — OSHB/WLC; Mateus 2:1 — SBLGNT/MorphGNT.
 009 Salmo 1:1 — OSHB/WLC; Mateus 5:17 — SBLGNT/MorphGNT.
+010 Isaías 40:3 — OSHB/WLC; Marcos 1:2–3 — SBLGNT/MorphGNT.
 
-### Lesson 009 safeguards
+### Lesson 010 safeguards
 
-- `לֹא הָלַךְ`, `לֹא עָמָד`, `לֹא יָשָׁב` permanecem cláusulas negativas analisadas morfologicamente antes de leitura homilética.
-- `Μὴ νομίσητε` permanece μή + subjuntivo aoristo 2pl.
-- `καταλῦσαι` e `πληρῶσαι` permanecem infinitivos aoristos ativos.
-- “abolir/desfazer” e “cumprir/completar” são campos lexicais de partida, não conclusões doutrinárias automáticas.
+- `קוֹרֵא` permanece particípio Qal; `פַּנּוּ` e `יַשְּׁרוּ` permanecem imperativos Piel.
+- `γέγραπται` permanece perfeito passivo; `Ἑτοιμάσατε` e `ποιεῖτε` preservam seus aspectos imperativos distintos.
+- Marcos 1:2–3 é tratado como bloco de citação composto: Isaías 40:3 corresponde diretamente ao v.3; o v.2 ecoa também Êxodo 23:20/Malaquias 3:1.
+- composição de citação, tradução e implicação exegética permanecem camadas separadas.
 
 ## Publication gate
 
