@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'biblical_languages/ui/biblical_languages_catalog_screen.dart';
+import 'biblical_languages/ui/biblical_languages_platform_shell.dart';
 
 void main() {
   runApp(const HnkBiblicalLanguagesApp());
@@ -21,7 +21,7 @@ class HnkBiblicalLanguagesApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
       ),
-      home: const BiblicalLanguagesCatalogScreen(),
+      home: const BiblicalLanguagesPlatformShell(),
     );
   }
 }
