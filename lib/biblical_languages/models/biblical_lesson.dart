@@ -8,15 +8,7 @@ enum BiblicalLanguage {
 enum ScriptDirection { ltr, rtl }
 
 class LanguageLine {
-  const LanguageLine({
-    required this.language,
-    required this.text,
-    required this.label,
-    this.transliteration,
-    this.direction = ScriptDirection.ltr,
-    this.note,
-  });
-
+  const LanguageLine({required this.language, required this.text, required this.label, this.transliteration, this.direction = ScriptDirection.ltr, this.note});
   final BiblicalLanguage language;
   final String text;
   final String label;
@@ -26,14 +18,7 @@ class LanguageLine {
 }
 
 class ScriptureToken {
-  const ScriptureToken({
-    required this.surface,
-    required this.transliteration,
-    required this.glossPt,
-    required this.lemma,
-    required this.morphology,
-  });
-
+  const ScriptureToken({required this.surface, required this.transliteration, required this.glossPt, required this.lemma, required this.morphology});
   final String surface;
   final String transliteration;
   final String glossPt;
@@ -42,22 +27,7 @@ class ScriptureToken {
 }
 
 class ScripturePassage {
-  const ScripturePassage({
-    required this.id,
-    required this.reference,
-    required this.language,
-    required this.text,
-    required this.transliteration,
-    required this.literalPt,
-    required this.naturalPt,
-    required this.tokens,
-    required this.sourceEdition,
-    required this.sourceLicense,
-    required this.sourceAttribution,
-    this.direction = ScriptDirection.ltr,
-    this.translationNotePt,
-  });
-
+  const ScripturePassage({required this.id, required this.reference, required this.language, required this.text, required this.transliteration, required this.literalPt, required this.naturalPt, required this.tokens, required this.sourceEdition, required this.sourceLicense, required this.sourceAttribution, this.direction = ScriptDirection.ltr, this.translationNotePt});
   final String id;
   final String reference;
   final BiblicalLanguage language;
@@ -74,13 +44,7 @@ class ScripturePassage {
 }
 
 class ComparativePattern {
-  const ComparativePattern({
-    required this.id,
-    required this.title,
-    required this.explanationPt,
-    required this.lines,
-  });
-
+  const ComparativePattern({required this.id, required this.title, required this.explanationPt, required this.lines});
   final String id;
   final String title;
   final String explanationPt;
@@ -88,14 +52,7 @@ class ComparativePattern {
 }
 
 class DrillItem {
-  const DrillItem({
-    required this.id,
-    required this.structure,
-    required this.variant,
-    required this.taskPt,
-    required this.lines,
-  });
-
+  const DrillItem({required this.id, required this.structure, required this.variant, required this.taskPt, required this.lines});
   final String id;
   final int structure;
   final int variant;
@@ -104,32 +61,25 @@ class DrillItem {
 }
 
 class LessonChallenge {
-  const LessonChallenge({
-    required this.id,
-    required this.promptPt,
-    required this.answer,
-    required this.hintPt,
-  });
-
+  const LessonChallenge({required this.id, required this.promptPt, required this.answer, required this.hintPt});
   final String id;
   final String promptPt;
   final String answer;
   final String hintPt;
 }
 
-class BiblicalLesson {
-  const BiblicalLesson({
-    required this.id,
-    required this.number,
-    required this.title,
-    required this.subtitle,
-    required this.objectivePt,
-    required this.scriptures,
-    required this.patterns,
-    required this.drills,
-    required this.challenge,
-  });
+class ReadingStage {
+  const ReadingStage({required this.number, required this.title, required this.instructionPt, required this.showPortuguese, required this.showTransliteration, required this.codexAllowed});
+  final int number;
+  final String title;
+  final String instructionPt;
+  final bool showPortuguese;
+  final bool showTransliteration;
+  final bool codexAllowed;
+}
 
+class BiblicalLesson {
+  const BiblicalLesson({required this.id, required this.number, required this.title, required this.subtitle, required this.objectivePt, required this.scriptures, required this.patterns, required this.drills, required this.challenge, this.readingPlan = const []});
   final String id;
   final int number;
   final String title;
@@ -139,4 +89,5 @@ class BiblicalLesson {
   final List<ComparativePattern> patterns;
   final List<DrillItem> drills;
   final LessonChallenge challenge;
+  final List<ReadingStage> readingPlan;
 }
