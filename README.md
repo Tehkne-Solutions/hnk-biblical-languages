@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery e revisão espaçada.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada e Player Progression.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -54,12 +54,11 @@ Regras atuais:
 
 - resposta correta: **+10 XP**;
 - mastery por drill: **0–5**;
-- resposta errada não avança a posição e entra imediatamente na fila de revisão;
-- resposta correta avança para o próximo drill;
+- resposta errada mantém exatamente o cursor atual e entra imediatamente na fila de revisão;
+- resposta correta só avança o cursor quando o drill respondido está à frente;
 - revisar um drill antigo **nunca regride o cursor salvo da Lesson**;
 - intervalos de revisão por mastery: **1, 3, 7, 14 e 30 dias**;
 - streak é diário e reinicia após um dia sem prática;
-- saves antigos em schema v1 migram automaticamente para **schema v2**;
 - posição de estudo e mastery permanecem conceitos separados.
 
 ### DAILY SESSION 12
@@ -82,7 +81,37 @@ Regras:
 - somente o acerto conclui o item da sessão;
 - resumo final mostra **XP ganho, acurácia, itens com mastery aumentado e streak**;
 - a composição da sessão mostra quantos itens são revisão, novo conteúdo e reforço;
-- a sessão usa `recordDrillResult` e `buildDrillPracticeQuestion`, sem criar um segundo motor de aprendizagem.
+- a sessão usa `recordDrillResult` e `buildDrillPracticeQuestion`, sem criar um segundo motor de aprendizagem;
+- ao concluir, a sessão é registrada no histórico do jogador.
+
+### PLAYER PROGRESSION V1
+
+A progressão do jogador é uma camada meta sobre os cinco modos pedagógicos; ela **não cria títulos espirituais** e não substitui domínio linguístico por pontos.
+
+Ranks atuais por XP:
+
+```text
+1 · Aprendiz
+2 · Leitor
+3 · Decodificador
+4 · Escriba
+5 · Leitor Avançado
+6 · Analista
+7 · Exegeta em Formação
+```
+
+O dashboard de Player Progression, acessível pelo perfil no DRILL, mostra:
+
+- rank atual, barra até o próximo rank e XP restante;
+- meta diária concluída ou pendente;
+- XP total e streak;
+- sessões concluídas;
+- média de acurácia das 7 sessões mais recentes;
+- quantidade de drills em mastery ≥1, ≥3 e =5;
+- **12 conquistas** baseadas em prática observável, como streak, XP, Lessons, mastery, sessão perfeita e número de sessões;
+- histórico das 12 sessões mais recentes na interface.
+
+O progresso persistente usa **schema v3** e mantém migração automática de saves v1 e v2. O histórico persistido é limitado às **90 sessões mais recentes**, evitando crescimento indefinido do armazenamento local.
 
 ## Contrato editorial
 
@@ -113,6 +142,7 @@ lib/
       drill_factory.dart
       drill_practice_factory.dart
       daily_session_factory.dart
+      player_progression.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -124,6 +154,7 @@ lib/
       drill_mode_screen.dart
       drill_practice_screen.dart
       daily_session_screen.dart
+      player_progress_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -151,13 +182,16 @@ O `main` deve permanecer verde em:
 - `flutter analyze --no-fatal-infos`;
 - contratos linguísticos/proveniência;
 - progressão e persistência;
-- migração de progresso v1 → v2;
+- migração de progresso v1/v2 → v3;
 - XP, streak, mastery e scheduling de revisão;
 - resposta errada → retry → resposta correta no runtime DRILL;
 - revisão antiga não regride o cursor da Lesson;
 - Daily Session 12: revisão → novo → reforço;
 - sessão nunca inclui Lesson bloqueada;
 - resumo de sessão com XP e acurácia reais;
+- histórico de sessões e meta diária;
+- ranks e conquistas derivados do progresso real;
+- dashboard Player Progression;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
