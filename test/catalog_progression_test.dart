@@ -3,6 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hnk_biblical_languages/biblical_languages/progress/biblical_progress.dart';
 import 'package:hnk_biblical_languages/biblical_languages/ui/biblical_languages_catalog_screen.dart';
 
+Future<void> _scrollToLesson004(WidgetTester tester) async {
+  await tester.scrollUntilVisible(
+    find.text('Casa e Família'),
+    360,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('Lesson 004 unlocks only after Lessons 001–003 are completed',
       (tester) async {
@@ -28,6 +37,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    await _scrollToLesson004(tester);
 
     expect(find.text('Casa e Família'), findsOneWidget);
     expect(find.text('DRILL 1 / 72'), findsOneWidget);
@@ -59,9 +69,11 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    await _scrollToLesson004(tester);
 
     final casa = find.text('Casa e Família');
     expect(casa, findsOneWidget);
+    expect(find.text('BLOQUEADO'), findsWidgets);
 
     await tester.tap(casa);
     await tester.pumpAndSettle();
