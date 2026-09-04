@@ -5,6 +5,19 @@ import 'package:hnk_biblical_languages/biblical_languages/content/drill_practice
 import 'package:hnk_biblical_languages/biblical_languages/progress/biblical_progress.dart';
 import 'package:hnk_biblical_languages/biblical_languages/ui/drill_practice_screen.dart';
 
+Future<void> _scrollUntil(
+  WidgetTester tester,
+  Finder finder, {
+  double delta = 360,
+}) async {
+  await tester.scrollUntilVisible(
+    finder,
+    delta,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   test('practice factory derives canonical multiple-choice question', () {
     final lesson = implementedBiblicalLessons.first;
@@ -74,6 +87,7 @@ void main() {
     await tester.tap(find.text(wrong));
     await tester.pumpAndSettle();
 
+    await _scrollUntil(tester, find.text('REVISÃO AGENDADA'));
     expect(find.text('REVISÃO AGENDADA'), findsOneWidget);
     expect(store.snapshot.xp, 0);
     expect(store.snapshot.drillPositionFor(lesson.id), 0);
@@ -81,9 +95,15 @@ void main() {
 
     await tester.tap(find.text('TENTAR DE NOVO'));
     await tester.pumpAndSettle();
+    await _scrollUntil(
+      tester,
+      find.text(question.correctAnswer),
+      delta: -360,
+    );
     await tester.tap(find.text(question.correctAnswer));
     await tester.pumpAndSettle();
 
+    await _scrollUntil(tester, find.text('CORRETO · +10 XP'));
     expect(find.text('CORRETO · +10 XP'), findsOneWidget);
     expect(store.snapshot.xp, 10);
     expect(store.snapshot.drillPositionFor(lesson.id), 1);
