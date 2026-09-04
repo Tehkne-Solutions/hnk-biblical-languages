@@ -21,37 +21,30 @@ Morphological support: MorphGNT SBLGNT Edition.
 
 ## Editorial rules
 
-Hebrew learner display may remove cantillation while preserving consonants/vowels. Short LXX forms may appear only as labeled bridges. Portuguese and Esperanto are course-authored pedagogical renderings unless an edition is explicitly declared.
+Hebrew learner display may remove cantillation while preserving consonants/vowels. Short LXX forms may appear only as labeled bridges. Portuguese and Esperanto are course-authored pedagogical renderings unless an edition is declared.
 
 ```text
-source text
-→ transliteration
-→ lemma / lexical gloss
-→ morphology
-→ literal translation
-→ natural translation
-→ translation note
-→ theological / exegetical interpretation
+source text → transliteration → lemma/gloss → morphology → literal → natural → note → interpretation
 ```
 
 ## Current provenance
 
-- 001: Gênesis 1:1 — OSHB/WLC; João 1:1 — SBLGNT/MorphGNT.
-- 002: Êxodo 3:14 — OSHB/WLC; João 1:6 — SBLGNT/MorphGNT.
-- 003: Gênesis 1:3 — OSHB/WLC; João 1:3a–b — SBLGNT/MorphGNT.
-- 004: Gênesis 12:1 — OSHB/WLC; Lucas 1:27 — SBLGNT/MorphGNT.
-- 005: Gênesis 1:5 — OSHB/WLC; Marcos 1:15 — SBLGNT/MorphGNT.
-- 006: Deuteronômio 6:5 — OSHB/WLC; Marcos 12:30 — SBLGNT/MorphGNT.
-- 007: Gênesis 1:11–12 — OSHB/WLC; João 1:3–5 — SBLGNT/MorphGNT.
-- 008: 1 Samuel 8:5 — OSHB/WLC; Mateus 2:1 — SBLGNT/MorphGNT.
+001 Gênesis 1:1 — OSHB/WLC; João 1:1 — SBLGNT/MorphGNT.
+002 Êxodo 3:14 — OSHB/WLC; João 1:6 — SBLGNT/MorphGNT.
+003 Gênesis 1:3 — OSHB/WLC; João 1:3a–b — SBLGNT/MorphGNT.
+004 Gênesis 12:1 — OSHB/WLC; Lucas 1:27 — SBLGNT/MorphGNT.
+005 Gênesis 1:5 — OSHB/WLC; Marcos 1:15 — SBLGNT/MorphGNT.
+006 Deuteronômio 6:5 — OSHB/WLC; Marcos 12:30 — SBLGNT/MorphGNT.
+007 Gênesis 1:11–12 — OSHB/WLC; João 1:3–5 — SBLGNT/MorphGNT.
+008 1 Samuel 8:5 — OSHB/WLC; Mateus 2:1 — SBLGNT/MorphGNT.
+009 Salmo 1:1 — OSHB/WLC; Mateus 5:17 — SBLGNT/MorphGNT.
 
-### Lesson 008 safeguards
+### Lesson 009 safeguards
 
-- `שִׂימָה־לָּנוּ` permanece imperativo Qal 2ms + “para nós”.
-- `לְשָׁפְטֵנוּ` permanece infinitivo construto Qal + sufixo 1cp.
-- `γεννηθέντος` permanece particípio aoristo passivo genitivo.
-- `ἀπό` e `εἰς` são tratados como origem e direção no contexto, sem apagar seus regimes sintáticos.
-- gramática de títulos, povos e lugares não é automaticamente convertida em reconstrução histórica ou teológica.
+- `לֹא הָלַךְ`, `לֹא עָמָד`, `לֹא יָשָׁב` permanecem cláusulas negativas analisadas morfologicamente antes de leitura homilética.
+- `Μὴ νομίσητε` permanece μή + subjuntivo aoristo 2pl.
+- `καταλῦσαι` e `πληρῶσαι` permanecem infinitivos aoristos ativos.
+- “abolir/desfazer” e “cumprir/completar” são campos lexicais de partida, não conclusões doutrinárias automáticas.
 
 ## Publication gate
 
