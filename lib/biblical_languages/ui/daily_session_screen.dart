@@ -76,6 +76,25 @@ class _DailySessionScreenState extends State<DailySessionScreen> {
     });
   }
 
+  Future<void> _completeSession() async {
+    final next = _progress.recordPracticeSession(
+      itemCount: widget.plan.items.length,
+      attempts: _attempts,
+      correctAttempts: _correctAttempts,
+      xpGained: _progress.xp - _startXp,
+      masteryImproved: _masteryImproved,
+      reviewCount: widget.plan.reviewCount,
+      newCount: widget.plan.newCount,
+      reinforcementCount: widget.plan.reinforcementCount,
+    );
+    await widget.progressStore.save(next);
+    if (!mounted) return;
+    setState(() {
+      _progress = next;
+      _finished = true;
+    });
+  }
+
   void _continue() {
     if (_correct == false) {
       setState(() {
@@ -86,7 +105,7 @@ class _DailySessionScreenState extends State<DailySessionScreen> {
     }
 
     if (_sessionIndex == widget.plan.items.length - 1) {
-      setState(() => _finished = true);
+      _completeSession();
       return;
     }
 
