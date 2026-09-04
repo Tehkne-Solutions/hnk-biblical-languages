@@ -21,6 +21,24 @@ class BiblicalLessonPlanScreen extends StatelessWidget {
   final BiblicalProgressStore progressStore;
   final BiblicalProgressSnapshot initialProgress;
 
+  Future<void> _startStudy(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        settings: RouteSettings(
+          name: '/lesson/${lesson.number.toString().padLeft(3, '0')}/study',
+        ),
+        builder: (_) => BiblicalLessonScreen(
+          lesson: lesson,
+          progressStore: progressStore,
+          initialProgress: initialProgress,
+        ),
+      ),
+    );
+
+    if (!context.mounted) return;
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isExegesis = lesson.number == 12;
@@ -83,20 +101,7 @@ class BiblicalLessonPlanScreen extends StatelessWidget {
             ),
           const SizedBox(height: 8),
           FilledButton.icon(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute<void>(
-                  settings: RouteSettings(
-                    name: '/lesson/${lesson.number.toString().padLeft(3, '0')}/study',
-                  ),
-                  builder: (_) => BiblicalLessonScreen(
-                    lesson: lesson,
-                    progressStore: progressStore,
-                    initialProgress: initialProgress,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => _startStudy(context),
             style: FilledButton.styleFrom(
               backgroundColor: _blue,
               padding: const EdgeInsets.symmetric(vertical: 16),
