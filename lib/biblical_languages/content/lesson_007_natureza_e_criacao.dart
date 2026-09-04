@@ -1,46 +1,22 @@
 import '../models/biblical_lesson.dart';
 import 'drill_factory.dart';
+import 'lesson_007_greek.dart';
+import 'lesson_007_hebrew.dart';
+import 'lesson_007_patterns.dart';
 
-const _heEdition = 'Open Scriptures Hebrew Bible / WLC base text';
-const _heLicense = 'WLC text: Public Domain · OSHB morphology: CC BY 4.0';
-const _heAttr = 'Open Scriptures Hebrew Bible Project';
-const _grEdition = 'SBL Greek New Testament (SBLGNT) v1.2';
-const _grLicense =
-    'SBLGNT electronic text: published SBLGNT EULA · MorphGNT parsing: CC BY-SA';
-const _grAttr =
-    'SBL Greek New Testament, ed. Michael W. Holmes · MorphGNT SBLGNT Edition, ed. James Tauber.';
-
-const lesson007Scriptures = <ScripturePassage>[
-  ScripturePassage(
-    id: 'genesis_1_11_12_hebrew',
-    reference: 'Gênesis 1:11–12',
-    language: BiblicalLanguage.biblicalHebrew,
-    direction: ScriptDirection.rtl,
-    text:
-        'וַיֹּאמֶר אֱלֹהִים תַּדְשֵׁא הָאָרֶץ דֶּשֶׁא עֵשֶׂב מַזְרִיעַ זֶרַע עֵץ פְּרִי עֹשֶׂה פְּרִי לְמִינוֹ אֲשֶׁר זַרְעוֹ־בוֹ עַל־הָאָרֶץ וַיְהִי־כֵן׃ וַתּוֹצֵא הָאָרֶץ דֶּשֶׁא עֵשֶׂב מַזְרִיעַ זֶרַע לְמִינֵהוּ וְעֵץ עֹשֶׂה־פְּרִי אֲשֶׁר זַרְעוֹ־בוֹ לְמִינֵהוּ וַיַּרְא אֱלֹהִים כִּי־טוֹב׃',
-    transliteration:
-        'Vayomer Elohim: tadshê ha’aretz ... vayehi-khen. Vattotse ha’aretz ... vayar Elohim ki-tov.',
-    literalPt:
-        'E Deus disse: “Que a terra faça brotar vegetação, planta produzindo semente e árvore de fruto fazendo fruto segundo a sua espécie”; e assim foi. E a terra fez sair vegetação ... e Deus viu que era bom.',
-    naturalPt:
-        'Deus disse: “Que a terra produza vegetação, plantas com sementes e árvores frutíferas, cada uma segundo a sua espécie”. E assim aconteceu; a terra produziu, e Deus viu que era bom.',
-    sourceEdition: _heEdition,
-    sourceLicense: _heLicense,
-    sourceAttribution: _heAttr,
-    translationNotePt:
-        'תַּדְשֵׁא é Hifil imperfeito jussivo 3fs; וַתּוֹצֵא é Hifil consecutivo imperfeito 3fs. O curso contrasta convocação volitiva e realização narrativa sem reduzir o sistema verbal hebraico a uma linha temporal simples.',
-    tokens: [
-      ScriptureToken(surface: 'תַּדְשֵׁא', transliteration: 'tadshê', glossPt: 'que faça brotar', lemma: 'דשא', morphology: 'Hifil imperfeito jussivo, 3ª pessoa feminina singular'),
-      ScriptureToken(surface: 'הָאָרֶץ', transliteration: 'ha’aretz', glossPt: 'a terra', lemma: 'אֶרֶץ', morphology: 'artigo + substantivo feminino singular'),
-      ScriptureToken(surface: 'מַזְרִיעַ', transliteration: 'mazria', glossPt: 'produzindo / portando semente', lemma: 'זרע', morphology: 'Hifil particípio masculino singular'),
-      ScriptureToken(surface: 'עֵץ פְּרִי', transliteration: 'etz peri', glossPt: 'árvore de fruto', lemma: 'עֵץ + פְּרִי', morphology: 'substantivo em construto + substantivo masculino singular'),
-      ScriptureToken(surface: 'וַתּוֹצֵא', transliteration: 'vattotse', glossPt: 'e produziu', lemma: 'יצא', morphology: 'Hifil consecutivo imperfeito, 3ª pessoa feminina singular'),
-      ScriptureToken(surface: 'כִּי־טוֹב', transliteration: 'ki-tov', glossPt: 'que era bom', lemma: 'כִּי + טוֹב', morphology: 'conjunção + adjetivo masculino singular'),
-    ],
+final lesson007NaturezaECriacao = BiblicalLesson(
+  id: 'biblical_lesson_007',
+  number: 7,
+  title: 'ERETZ · ZŌĒ · PHŌS · NATUREZA E CRIAÇÃO',
+  subtitle: 'Gênesis 1:11–12 + João 1:3–5 · brotar, vida, luz e trevas',
+  objectivePt: 'Ler descrição da criação distinguindo jussivo e realização narrativa no Hebraico, e reconhecer vida, luz, trevas e aspecto verbal no Grego sem forçar equivalências lexicais.',
+  scriptures: const [lesson007Hebrew, lesson007Greek],
+  patterns: lesson007Patterns,
+  drills: build72Drills(lessonId: 'biblical_lesson_007', patterns: lesson007Patterns),
+  challenge: const LessonChallenge(
+    id: 'decode_creation_light',
+    promptPt: 'Explique o movimento תַּדְשֵׁא → וַתּוֹצֵא e depois decifre τὸ φῶς ἐν τῇ σκοτίᾳ φαίνει.',
+    answer: 'תַּדְשֵׁא convoca a terra a fazer brotar; וַתּוֹצֵא narra a realização. τὸ φῶς ἐν τῇ σκοτίᾳ φαίνει = “a luz brilha nas trevas”.',
+    hintPt: 'Use as estruturas 01, 02 e 12.',
   ),
-  ScripturePassage(
-    id: 'john_1_3_5_greek',
-    reference: 'João 1:3–5',
-    language: BiblicalLanguage.koineGreek,
-    text:
-        'πάντα δι’ αὐτοῦ ἐγένετο, καὶ χωρὶς αὐτοῦ ἐγένετο οὐδὲ ἕν. ὃ γέγονεν ἐν αὐτῷ ζωὴ ἦν,
+);
