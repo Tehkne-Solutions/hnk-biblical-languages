@@ -1,6 +1,6 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: FOUNDATION ACTIVE / LESSONS 001–003 IMPLEMENTED
+Status: FOUNDATION ACTIVE / LESSONS 001–004 IMPLEMENTED
 
 ## Thesis
 
@@ -82,21 +82,41 @@ Gênesis 1:1 + João 1:1.
 
 Gênesis 1:3 + João 1:3a–b.
 
+### Lesson 004 — Casa e Família
+
+Gênesis 12:1 + Lucas 1:27.
+
+Eixo gramatical:
+
+- בֵּית como forma construta de בַּיִת;
+- אָבִיךָ com sufixo possessivo 2ms;
+- מִבֵּית אָבִיךָ como relação de origem + casa + possuidor;
+- οἴκου e τῆς παρθένου como genitivos;
+- ἐμνηστευμένην ἀνδρί como particípio perfeito passivo + dativo;
+- distinção explícita entre construto hebraico e genitivo grego.
+
 ## Progressão
 
 Lesson 001 é aberta.
 Lesson 002 exige conclusão da 001.
 Lesson 003 exige conclusão da 002.
-Níveis 4–12 permanecem visíveis, mas não são apresentados como conteúdo já implementado.
+Lesson 004 exige conclusão da 003.
+Níveis 5–12 permanecem visíveis, mas não são apresentados como conteúdo já implementado.
+
+## Métrica atual
+
+```text
+4 Lessons × 72 drills = 288 drills
+```
 
 ## Próximo slice
 
-Lesson 004 — Casa e Família:
+Lesson 005 — Tempo e Dias:
 
-- definir âncoras hebraica e grega;
-- validar proveniência;
-- trabalhar posse, relações familiares, construto hebraico e genitivo grego;
+- Gênesis 1:5 + Marcos 1:15;
+- dias, números e marcadores temporais;
+- sequência narrativa e aspecto verbal;
 - 12 estruturas;
 - 72 drills;
 - Final Quest;
-- desbloqueio após Lesson 003.
+- desbloqueio após Lesson 004.
