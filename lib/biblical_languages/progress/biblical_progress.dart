@@ -40,6 +40,63 @@ class BiblicalLearningPreferences {
   }
 }
 
+class PracticeSessionRecord {
+  const PracticeSessionRecord({
+    required this.completedAt,
+    required this.itemCount,
+    required this.attempts,
+    required this.correctAttempts,
+    required this.xpGained,
+    required this.masteryImproved,
+    required this.reviewCount,
+    required this.newCount,
+    required this.reinforcementCount,
+  });
+
+  final DateTime completedAt;
+  final int itemCount;
+  final int attempts;
+  final int correctAttempts;
+  final int xpGained;
+  final int masteryImproved;
+  final int reviewCount;
+  final int newCount;
+  final int reinforcementCount;
+
+  int get accuracy =>
+      attempts == 0 ? 0 : ((correctAttempts / attempts) * 100).round();
+
+  Map<String, Object?> toJson() => {
+        'completedAt': completedAt.toUtc().toIso8601String(),
+        'itemCount': itemCount,
+        'attempts': attempts,
+        'correctAttempts': correctAttempts,
+        'xpGained': xpGained,
+        'masteryImproved': masteryImproved,
+        'reviewCount': reviewCount,
+        'newCount': newCount,
+        'reinforcementCount': reinforcementCount,
+      };
+
+  factory PracticeSessionRecord.fromJson(Map<String, Object?> json) {
+    return PracticeSessionRecord(
+      completedAt: DateTime.tryParse('${json['completedAt'] ?? ''}')?.toUtc() ??
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+      itemCount: ((json['itemCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+      attempts: ((json['attempts'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
+      correctAttempts:
+          ((json['correctAttempts'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
+      xpGained: ((json['xpGained'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
+      masteryImproved:
+          ((json['masteryImproved'] as num?)?.toInt() ?? 0).clamp(0, 864),
+      reviewCount: ((json['reviewCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+      newCount: ((json['newCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+      reinforcementCount:
+          ((json['reinforcementCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+    );
+  }
+}
+
 class BiblicalProgressSnapshot {
   const BiblicalProgressSnapshot({
     this.schemaVersion = currentSchemaVersion,
@@ -48,6 +105,7 @@ class BiblicalProgressSnapshot {
     this.preferences = const BiblicalLearningPreferences(),
     this.masteryByDrillId = const <String, int>{},
     this.reviewDueAtByDrillId = const <String, DateTime>{},
+    this.practiceSessions = const <PracticeSessionRecord>[],
     this.xp = 0,
     this.streakDays = 0,
     this.lastPracticeDay,
@@ -55,8 +113,9 @@ class BiblicalProgressSnapshot {
     this.updatedAt,
   });
 
-  static const int currentSchemaVersion = 2;
+  static const int currentSchemaVersion = 3;
   static const int maxMastery = 5;
+  static const int maxSessionHistory = 90;
 
   final int schemaVersion;
   final Map<String, int> drillPositions;
@@ -64,6 +123,7 @@ class BiblicalProgressSnapshot {
   final BiblicalLearningPreferences preferences;
   final Map<String, int> masteryByDrillId;
   final Map<String, DateTime> reviewDueAtByDrillId;
+  final List<PracticeSessionRecord> practiceSessions;
   final int xp;
   final int streakDays;
   final DateTime? lastPracticeDay;
@@ -83,6 +143,13 @@ class BiblicalProgressSnapshot {
     if (dueAt == null) return false;
     final reference = (now ?? DateTime.now().toUtc()).toUtc();
     return !dueAt.isAfter(reference);
+  }
+
+  bool dailyGoalCompletedOn(DateTime day) {
+    final target = _utcDay(day);
+    return practiceSessions.any(
+      (session) => _utcDay(session.completedAt) == target,
+    );
   }
 
   BiblicalProgressSnapshot saveDrillPosition(
@@ -120,12 +187,13 @@ class BiblicalProgressSnapshot {
     final nextMastery = correct
         ? (previousMastery + 1).clamp(0, maxMastery).toInt()
         : (previousMastery - 1).clamp(0, maxMastery).toInt();
-    final savedPosition = drillPositionFor(lessonId);
-    final candidatePosition =
-        correct ? (zeroBasedIndex + 1).clamp(0, 71).toInt() : savedPosition;
-    final nextPosition = candidatePosition > savedPosition
-        ? candidatePosition
-        : savedPosition;
+    final currentPosition = drillPositionFor(lessonId);
+    final answeredPosition = correct
+        ? (zeroBasedIndex + 1).clamp(0, 71).toInt()
+        : zeroBasedIndex;
+    final nextPosition = currentPosition > answeredPosition
+        ? currentPosition
+        : answeredPosition;
     final nextStreak = _streakFor(eventAt);
     final dueAt = correct
         ? eventAt.add(Duration(days: _reviewIntervalDays(nextMastery)))
@@ -148,6 +216,40 @@ class BiblicalProgressSnapshot {
       streakDays: nextStreak,
       lastPracticeDay: _utcDay(eventAt),
       lastLessonId: lessonId,
+      updatedAt: eventAt,
+    );
+  }
+
+  BiblicalProgressSnapshot recordPracticeSession({
+    required int itemCount,
+    required int attempts,
+    required int correctAttempts,
+    required int xpGained,
+    required int masteryImproved,
+    required int reviewCount,
+    required int newCount,
+    required int reinforcementCount,
+    DateTime? timestamp,
+  }) {
+    final eventAt = (timestamp ?? DateTime.now().toUtc()).toUtc();
+    final session = PracticeSessionRecord(
+      completedAt: eventAt,
+      itemCount: itemCount,
+      attempts: attempts,
+      correctAttempts: correctAttempts,
+      xpGained: xpGained,
+      masteryImproved: masteryImproved,
+      reviewCount: reviewCount,
+      newCount: newCount,
+      reinforcementCount: reinforcementCount,
+    );
+    final nextHistory = <PracticeSessionRecord>[...practiceSessions, session];
+    final trimmed = nextHistory.length <= maxSessionHistory
+        ? nextHistory
+        : nextHistory.sublist(nextHistory.length - maxSessionHistory);
+
+    return _copyWith(
+      practiceSessions: List<PracticeSessionRecord>.unmodifiable(trimmed),
       updatedAt: eventAt,
     );
   }
@@ -216,6 +318,7 @@ class BiblicalProgressSnapshot {
     BiblicalLearningPreferences? preferences,
     Map<String, int>? masteryByDrillId,
     Map<String, DateTime>? reviewDueAtByDrillId,
+    List<PracticeSessionRecord>? practiceSessions,
     int? xp,
     int? streakDays,
     DateTime? lastPracticeDay,
@@ -229,6 +332,7 @@ class BiblicalProgressSnapshot {
       preferences: preferences ?? this.preferences,
       masteryByDrillId: masteryByDrillId ?? this.masteryByDrillId,
       reviewDueAtByDrillId: reviewDueAtByDrillId ?? this.reviewDueAtByDrillId,
+      practiceSessions: practiceSessions ?? this.practiceSessions,
       xp: xp ?? this.xp,
       streakDays: streakDays ?? this.streakDays,
       lastPracticeDay: lastPracticeDay ?? this.lastPracticeDay,
@@ -246,6 +350,7 @@ class BiblicalProgressSnapshot {
         'reviewDueAtByDrillId': reviewDueAtByDrillId.map(
           (key, value) => MapEntry(key, value.toUtc().toIso8601String()),
         ),
+        'practiceSessions': practiceSessions.map((session) => session.toJson()).toList(),
         'xp': xp,
         'streakDays': streakDays,
         'lastPracticeDay': lastPracticeDay?.toUtc().toIso8601String(),
@@ -272,7 +377,19 @@ class BiblicalProgressSnapshot {
     final rawReviewDue =
         (json['reviewDueAtByDrillId'] as Map?)?.cast<String, Object?>() ??
             const <String, Object?>{};
+    final rawSessions = json['practiceSessions'] as List? ?? const [];
     final lastLessonId = '${json['lastLessonId'] ?? ''}'.trim();
+    final parsedSessions = rawSessions
+        .whereType<Map>()
+        .map(
+          (value) => PracticeSessionRecord.fromJson(
+            value.cast<String, Object?>(),
+          ),
+        )
+        .toList(growable: false);
+    final trimmedSessions = parsedSessions.length <= maxSessionHistory
+        ? parsedSessions
+        : parsedSessions.sublist(parsedSessions.length - maxSessionHistory);
 
     return BiblicalProgressSnapshot(
       schemaVersion: currentSchemaVersion,
@@ -301,6 +418,7 @@ class BiblicalProgressSnapshot {
           if (DateTime.tryParse('${entry.value}') != null)
             entry.key: DateTime.parse('${entry.value}').toUtc(),
       }),
+      practiceSessions: List<PracticeSessionRecord>.unmodifiable(trimmedSessions),
       xp: ((json['xp'] as num?)?.toInt() ?? 0).clamp(0, 1 << 31).toInt(),
       streakDays:
           ((json['streakDays'] as num?)?.toInt() ?? 0).clamp(0, 1 << 20).toInt(),
