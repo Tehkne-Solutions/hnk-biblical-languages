@@ -4,6 +4,7 @@ import '../content/course_map.dart';
 import '../content/course_registry.dart';
 import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
+import 'biblical_lesson_plan_screen.dart';
 import 'biblical_lesson_screen.dart';
 
 const _ink = Color(0xFF0F172A);
@@ -61,11 +62,17 @@ class _BiblicalLanguagesCatalogScreenState
         settings: RouteSettings(
           name: '/lesson/${number.toString().padLeft(3, '0')}',
         ),
-        builder: (_) => BiblicalLessonScreen(
-          lesson: lesson,
-          progressStore: widget.progressStore,
-          initialProgress: progress,
-        ),
+        builder: (_) => lesson.readingPlan.isNotEmpty
+            ? BiblicalLessonPlanScreen(
+                lesson: lesson,
+                progressStore: widget.progressStore,
+                initialProgress: progress,
+              )
+            : BiblicalLessonScreen(
+                lesson: lesson,
+                progressStore: widget.progressStore,
+                initialProgress: progress,
+              ),
       ),
     );
     await _reload();
