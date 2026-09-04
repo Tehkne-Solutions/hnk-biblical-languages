@@ -75,11 +75,9 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(
-        '12 de 12 Lessons implementadas concluídas · 12 níveis no mapa total.',
-      ),
-      findsOneWidget,
-    );
+    const summary =
+        '12 de 12 Lessons implementadas concluídas · 12 níveis no mapa total.';
+    await _scrollUntil(tester, find.text(summary), delta: -600);
+    expect(find.text(summary), findsOneWidget);
   });
 }
