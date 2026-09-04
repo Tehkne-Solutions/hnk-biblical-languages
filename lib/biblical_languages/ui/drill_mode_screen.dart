@@ -9,6 +9,7 @@ import '../progress/biblical_progress.dart';
 import 'biblical_lesson_screen.dart';
 import 'daily_session_screen.dart';
 import 'drill_practice_screen.dart';
+import 'player_progress_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
@@ -47,6 +48,15 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
       if (!progress.isCompleted(lesson.id)) return lesson;
     }
     return implementedBiblicalLessons.last;
+  }
+
+  Future<void> _openPlayerProgress() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PlayerProgressScreen(progressStore: widget.progressStore),
+      ),
+    );
+    await _reload();
   }
 
   Future<void> _openDailySession(
@@ -118,6 +128,13 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
         title: const Text('DRILL'),
         backgroundColor: _ink,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            tooltip: 'Player Progression',
+            onPressed: _openPlayerProgress,
+            icon: const Icon(Icons.person_rounded),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
