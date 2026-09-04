@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada e Player Progression.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression e Learning Analytics.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -113,6 +113,39 @@ O dashboard de Player Progression, acessível pelo perfil no DRILL, mostra:
 
 O progresso persistente usa **schema v3** e mantém migração automática de saves v1 e v2. O histórico persistido é limitado às **90 sessões mais recentes**, evitando crescimento indefinido do armazenamento local.
 
+### LEARNING ANALYTICS V1
+
+O Analytics V1 deriva o perfil de aprendizagem diretamente do progresso canônico já salvo, sem criar um novo schema de telemetria.
+
+Ele calcula:
+
+- mastery médio por **Hebraico Bíblico**, **Grego Koiné** e **Esperanto**;
+- mastery médio por **modo cognitivo 1–6**;
+- quantidade de drills efetivamente tentados por dimensão;
+- revisões vencidas por idioma e modo;
+- idioma e modo atualmente mais frágeis;
+- foco recomendado visível no dashboard de Analytics.
+
+Mapeamento dos modos para idioma-alvo:
+
+```text
+1 / 4 → Hebraico Bíblico
+2 / 5 → Grego Koiné
+3 / 6 → Esperanto
+```
+
+A adaptação da Daily Session é deliberadamente conservadora:
+
+```text
+revisões vencidas continuam primeiro
+→ conteúdo novo continua sequencial
+→ somente o reforço adaptativo usa o perfil de fraqueza
+→ mastery individual continua sendo o critério principal
+→ idioma mais fraco só desempata drills com mastery equivalente
+```
+
+Assim, personalização nunca quebra unlock, ordem pedagógica ou revisão espaçada.
+
 ## Contrato editorial
 
 ```text
@@ -143,6 +176,7 @@ lib/
       drill_practice_factory.dart
       daily_session_factory.dart
       player_progression.dart
+      learning_analytics.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -155,6 +189,7 @@ lib/
       drill_practice_screen.dart
       daily_session_screen.dart
       player_progress_screen.dart
+      learning_analytics_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -192,6 +227,9 @@ O `main` deve permanecer verde em:
 - histórico de sessões e meta diária;
 - ranks e conquistas derivados do progresso real;
 - dashboard Player Progression;
+- Analytics por idioma e modo cognitivo;
+- reforço adaptativo preservando mastery e ordem pedagógica;
+- navegação Player Progression → Learning Analytics;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
