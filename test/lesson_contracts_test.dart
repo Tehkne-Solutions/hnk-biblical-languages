@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_001_bereshit_en_arche.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_002_identidade.dart';
 import 'package:hnk_biblical_languages/biblical_languages/content/lesson_003_ser_e_existir.dart';
+import 'package:hnk_biblical_languages/biblical_languages/content/lesson_004_casa_e_familia.dart';
 import 'package:hnk_biblical_languages/biblical_languages/models/biblical_lesson.dart';
 
 void main() {
@@ -9,6 +10,7 @@ void main() {
     lesson001BereshitEnArche,
     lesson002Identidade,
     lesson003SerEExistir,
+    lesson004CasaEFamilia,
   ];
 
   group('Biblical Languages canonical contracts', () {
@@ -78,6 +80,33 @@ void main() {
       final vayehi = genesis.tokens.firstWhere((t) => t.surface == 'וַיְהִי־');
       expect(yehi.morphology, contains('jussivo'));
       expect(vayehi.morphology, contains('consecutivo'));
+    });
+
+    test('Lesson 004 distinguishes Hebrew construct from Greek genitive', () {
+      final genesis = lesson004Scriptures.first;
+      final luke = lesson004Scriptures.last;
+
+      final houseConstruct =
+          genesis.tokens.firstWhere((t) => t.surface == 'וּמִבֵּית');
+      final father = genesis.tokens.firstWhere((t) => t.surface == 'אָבִיךָ');
+      final greekHouse = luke.tokens.firstWhere((t) => t.surface == 'οἴκου');
+      final greekVirgin =
+          luke.tokens.firstWhere((t) => t.surface == 'τῆς παρθένου');
+
+      expect(houseConstruct.morphology, contains('construto'));
+      expect(father.morphology, contains('sufixo possessivo'));
+      expect(greekHouse.morphology, contains('genitivo'));
+      expect(greekVirgin.morphology, contains('genitivo'));
+      expect(luke.translationNotePt, contains('não é estruturalmente idêntico'));
+    });
+
+    test('Lesson 004 anchors Genesis 12:1 and Luke 1:27', () {
+      expect(lesson004Scriptures, hasLength(2));
+      expect(lesson004Scriptures.first.reference, 'Gênesis 12:1');
+      expect(lesson004Scriptures.last.reference, 'Lucas 1:27');
+      expect(lesson004Scriptures.first.text, contains('מִבֵּית אָבִיךָ'));
+      expect(lesson004Scriptures.last.text, contains('ἐξ οἴκου Δαυίδ'));
+      expect(lesson004Scriptures.last.text, contains('τὸ ὄνομα τῆς παρθένου Μαριάμ'));
     });
   });
 }
