@@ -26,12 +26,14 @@ Esperanto não é tratado como uma quarta tradução decorativa. Ele funciona co
 - Lesson 003 — **Ser e Existir** — Gênesis 1:3 + João 1:3a–b.
 - Lesson 004 — **Casa e Família** — Gênesis 12:1 + Lucas 1:27.
 - Lesson 005 — **Tempo e Dias** — Gênesis 1:5 + Marcos 1:15.
+- Lesson 006 — **Corpo e Ações** — Deuteronômio 6:5 + Marcos 12:30.
 - 12 estruturas × 6 modos cognitivos = **72 drills por Lesson**.
-- **360 drills** nas cinco Lessons implementadas.
+- **432 drills** nas seis Lessons implementadas.
 - Hebraico RTL.
 - Camadas de Português, Esperanto e transliteração desligáveis.
 - CODEX por palavra com lema, gloss, morfologia, edição, licença e atribuição.
 - Progresso persistente e desbloqueio sequencial.
+- Registry central das Lessons implementadas.
 - Final Quest por Lesson.
 - Flutter CI com analyzer e testes contratuais.
 
@@ -49,6 +51,9 @@ lib/
   main.dart
   biblical_languages/
     content/
+      course_map.dart
+      course_registry.dart
+      drill_factory.dart
     models/
     progress/
     ui/
@@ -79,4 +84,4 @@ Uma observação morfológica nunca deve ser apresentada automaticamente como co
 
 ## Próximo nível
 
-Lesson 006 — **Corpo e Ações** — Deuteronômio 6:5 + Marcos 12:30.
+Lesson 007 — **Natureza e Criação** — Gênesis 1 + João 1:3–5.
