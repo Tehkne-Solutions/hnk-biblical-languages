@@ -195,7 +195,7 @@ class _Hero extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
-              value: completedLessons / 3,
+              value: completedLessons / 3.0,
               minHeight: 8,
               backgroundColor: Colors.white12,
               valueColor: const AlwaysStoppedAnimation<Color>(_gold),
@@ -306,7 +306,9 @@ class _LevelCard extends StatelessWidget {
                     if (implemented) ...[
                       const SizedBox(height: 12),
                       LinearProgressIndicator(
-                        value: completed ? 1 : (drillPosition / 72).clamp(0.0, 1.0),
+                        value: completed
+                            ? 1.0
+                            : (drillPosition / 72.0).clamp(0.0, 1.0).toDouble(),
                         minHeight: 5,
                         backgroundColor: const Color(0xFFE2E8F0),
                         valueColor: AlwaysStoppedAnimation<Color>(completed ? _gold : _blue),
