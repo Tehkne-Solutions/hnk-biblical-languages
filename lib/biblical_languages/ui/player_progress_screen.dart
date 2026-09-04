@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../content/player_progression.dart';
 import '../progress/biblical_progress.dart';
+import 'learning_analytics_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
@@ -52,6 +53,17 @@ class _PlayerProgressScreenState extends State<PlayerProgressScreen> {
         backgroundColor: _ink,
         foregroundColor: Colors.white,
         title: const Text('PLAYER PROGRESSION'),
+        actions: [
+          IconButton(
+            tooltip: 'Learning Analytics',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => LearningAnalyticsScreen(progress: progress),
+              ),
+            ),
+            icon: const Icon(Icons.insights_rounded),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
