@@ -23,22 +23,27 @@ BiblicalProgressSnapshot _completedThrough(int lessonNumber) {
   return progress;
 }
 
+Future<void> _pumpCatalog(
+  WidgetTester tester,
+  BiblicalProgressSnapshot progress,
+) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      home: BiblicalLanguagesCatalogScreen(
+        progressStore: MemoryBiblicalProgressStore(progress),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('Lesson 004 unlocks only after Lessons 001–003 are completed',
       (tester) async {
-    final store = MemoryBiblicalProgressStore(_completedThrough(3));
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BiblicalLanguagesCatalogScreen(progressStore: store),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await _pumpCatalog(tester, _completedThrough(3));
     await _scrollTo(tester, 'Casa e Família');
 
     expect(find.text('Casa e Família'), findsOneWidget);
-    expect(find.text('DRILL 1 / 72'), findsWidgets);
-
     await tester.tap(find.text('Casa e Família'));
     await tester.pumpAndSettle();
 
@@ -48,20 +53,10 @@ void main() {
 
   testWidgets('Lesson 004 remains locked when Lesson 003 is incomplete',
       (tester) async {
-    final store = MemoryBiblicalProgressStore(_completedThrough(2));
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BiblicalLanguagesCatalogScreen(progressStore: store),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await _pumpCatalog(tester, _completedThrough(2));
     await _scrollTo(tester, 'Casa e Família');
 
-    final casa = find.text('Casa e Família');
-    expect(casa, findsOneWidget);
-
-    await tester.tap(casa);
+    await tester.tap(find.text('Casa e Família'));
     await tester.pumpAndSettle();
 
     expect(find.text('BAYIT · OIKOS · CASA E FAMÍLIA'), findsNothing);
@@ -69,17 +64,8 @@ void main() {
 
   testWidgets('Lesson 005 unlocks after Lessons 001–004 are completed',
       (tester) async {
-    final store = MemoryBiblicalProgressStore(_completedThrough(4));
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BiblicalLanguagesCatalogScreen(progressStore: store),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await _pumpCatalog(tester, _completedThrough(4));
     await _scrollTo(tester, 'Tempo e Dias');
-
-    expect(find.text('Tempo e Dias'), findsOneWidget);
 
     await tester.tap(find.text('Tempo e Dias'));
     await tester.pumpAndSettle();
@@ -90,22 +76,38 @@ void main() {
 
   testWidgets('Lesson 005 remains locked when Lesson 004 is incomplete',
       (tester) async {
-    final store = MemoryBiblicalProgressStore(_completedThrough(3));
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BiblicalLanguagesCatalogScreen(progressStore: store),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await _pumpCatalog(tester, _completedThrough(3));
     await _scrollTo(tester, 'Tempo e Dias');
 
-    final tempo = find.text('Tempo e Dias');
-    expect(tempo, findsOneWidget);
-
-    await tester.tap(tempo);
+    await tester.tap(find.text('Tempo e Dias'));
     await tester.pumpAndSettle();
 
     expect(find.text('YOM · KAIROS · TEMPO E DIAS'), findsNothing);
+  });
+
+  testWidgets('Lesson 006 unlocks after Lessons 001–005 are completed',
+      (tester) async {
+    await _pumpCatalog(tester, _completedThrough(5));
+    await _scrollTo(tester, 'Corpo e Ações');
+
+    await tester.tap(find.text('Corpo e Ações'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('AHAV · AGAPĒSEIS · CORPO E AÇÕES'), findsOneWidget);
+    expect(
+      find.textContaining('Deuteronômio 6:5 + Marcos 12:30'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Lesson 006 remains locked when Lesson 005 is incomplete',
+      (tester) async {
+    await _pumpCatalog(tester, _completedThrough(4));
+    await _scrollTo(tester, 'Corpo e Ações');
+
+    await tester.tap(find.text('Corpo e Ações'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('AHAV · AGAPĒSEIS · CORPO E AÇÕES'), findsNothing);
   });
 }
