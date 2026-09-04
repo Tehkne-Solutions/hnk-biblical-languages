@@ -82,17 +82,28 @@ class PracticeSessionRecord {
     return PracticeSessionRecord(
       completedAt: DateTime.tryParse('${json['completedAt'] ?? ''}')?.toUtc() ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-      itemCount: ((json['itemCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
-      attempts: ((json['attempts'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
-      correctAttempts:
-          ((json['correctAttempts'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
-      xpGained: ((json['xpGained'] as num?)?.toInt() ?? 0).clamp(0, 1000000),
-      masteryImproved:
-          ((json['masteryImproved'] as num?)?.toInt() ?? 0).clamp(0, 864),
-      reviewCount: ((json['reviewCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
-      newCount: ((json['newCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+      itemCount:
+          ((json['itemCount'] as num?)?.toInt() ?? 0).clamp(0, 864).toInt(),
+      attempts: ((json['attempts'] as num?)?.toInt() ?? 0)
+          .clamp(0, 1000000)
+          .toInt(),
+      correctAttempts: ((json['correctAttempts'] as num?)?.toInt() ?? 0)
+          .clamp(0, 1000000)
+          .toInt(),
+      xpGained: ((json['xpGained'] as num?)?.toInt() ?? 0)
+          .clamp(0, 1000000)
+          .toInt(),
+      masteryImproved: ((json['masteryImproved'] as num?)?.toInt() ?? 0)
+          .clamp(0, 864)
+          .toInt(),
+      reviewCount:
+          ((json['reviewCount'] as num?)?.toInt() ?? 0).clamp(0, 864).toInt(),
+      newCount:
+          ((json['newCount'] as num?)?.toInt() ?? 0).clamp(0, 864).toInt(),
       reinforcementCount:
-          ((json['reinforcementCount'] as num?)?.toInt() ?? 0).clamp(0, 864),
+          ((json['reinforcementCount'] as num?)?.toInt() ?? 0)
+              .clamp(0, 864)
+              .toInt(),
     );
   }
 }
@@ -350,7 +361,8 @@ class BiblicalProgressSnapshot {
         'reviewDueAtByDrillId': reviewDueAtByDrillId.map(
           (key, value) => MapEntry(key, value.toUtc().toIso8601String()),
         ),
-        'practiceSessions': practiceSessions.map((session) => session.toJson()).toList(),
+        'practiceSessions':
+            practiceSessions.map((session) => session.toJson()).toList(),
         'xp': xp,
         'streakDays': streakDays,
         'lastPracticeDay': lastPracticeDay?.toUtc().toIso8601String(),
@@ -418,7 +430,8 @@ class BiblicalProgressSnapshot {
           if (DateTime.tryParse('${entry.value}') != null)
             entry.key: DateTime.parse('${entry.value}').toUtc(),
       }),
-      practiceSessions: List<PracticeSessionRecord>.unmodifiable(trimmedSessions),
+      practiceSessions:
+          List<PracticeSessionRecord>.unmodifiable(trimmedSessions),
       xp: ((json['xp'] as num?)?.toInt() ?? 0).clamp(0, 1 << 31).toInt(),
       streakDays:
           ((json['streakDays'] as num?)?.toInt() ?? 0).clamp(0, 1 << 20).toInt(),
