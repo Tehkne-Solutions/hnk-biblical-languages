@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../content/learning_analytics.dart';
 import '../progress/biblical_progress.dart';
+import 'mastery_map_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
@@ -28,6 +29,17 @@ class LearningAnalyticsScreen extends StatelessWidget {
         backgroundColor: _ink,
         foregroundColor: Colors.white,
         title: const Text('LEARNING ANALYTICS'),
+        actions: [
+          IconButton(
+            tooltip: 'Mastery Map',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => MasteryMapScreen(progress: progress),
+              ),
+            ),
+            icon: const Icon(Icons.grid_view_rounded),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
