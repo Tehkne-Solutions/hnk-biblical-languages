@@ -4,6 +4,19 @@ import 'package:hnk_biblical_languages/biblical_languages/content/player_progres
 import 'package:hnk_biblical_languages/biblical_languages/progress/biblical_progress.dart';
 import 'package:hnk_biblical_languages/biblical_languages/ui/player_progress_screen.dart';
 
+Future<void> _scrollDownUntilText(WidgetTester tester, String text) async {
+  for (var attempt = 0;
+      attempt < 10 && find.text(text).evaluate().isEmpty;
+      attempt++) {
+    await tester.drag(
+      find.byType(Scrollable).first,
+      const Offset(0, -500),
+    );
+    await tester.pumpAndSettle();
+  }
+  expect(find.text(text), findsOneWidget);
+}
+
 void main() {
   test('schema v3 records and restores practice session history', () {
     final at = DateTime.utc(2026, 9, 4, 18);
@@ -142,19 +155,8 @@ void main() {
     expect(find.text('NÍVEL 4 · Escriba'), findsOneWidget);
     expect(find.text('META DIÁRIA · DAILY SESSION'), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.text('CONQUISTAS'),
-      350,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('CONQUISTAS'), findsOneWidget);
-
-    await tester.scrollUntilVisible(
-      find.text('HISTÓRICO DE SESSÕES'),
-      400,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('HISTÓRICO DE SESSÕES'), findsOneWidget);
+    await _scrollDownUntilText(tester, 'CONQUISTAS');
+    await _scrollDownUntilText(tester, 'HISTÓRICO DE SESSÕES');
     expect(find.text('12 itens · +120 XP'), findsOneWidget);
   });
 }
