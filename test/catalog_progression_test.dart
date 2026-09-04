@@ -52,10 +52,24 @@ void main() {
           find.text('Lesson ${number.toString().padLeft(3, '0')} · Plano'),
           findsOneWidget,
         );
+
         for (final stage in lesson.readingPlan) {
+          await tester.scrollUntilVisible(
+            find.text(stage.title),
+            260,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
           expect(find.text(stage.title), findsOneWidget);
         }
+
         final startLabel = number == 12 ? 'INICIAR ANÁLISE' : 'INICIAR LEITURA';
+        await tester.scrollUntilVisible(
+          find.text(startLabel),
+          260,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
         await tester.tap(find.text(startLabel));
         await tester.pumpAndSettle();
       }
