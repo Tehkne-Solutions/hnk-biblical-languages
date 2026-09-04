@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../content/course_registry.dart';
+import '../content/daily_session_factory.dart';
 import '../content/drill_factory.dart';
 import '../content/drill_practice_factory.dart';
 import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
 import 'biblical_lesson_screen.dart';
+import 'daily_session_screen.dart';
 import 'drill_practice_screen.dart';
 
 const _ink = Color(0xFF0F172A);
@@ -45,6 +47,22 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
       if (!progress.isCompleted(lesson.id)) return lesson;
     }
     return implementedBiblicalLessons.last;
+  }
+
+  Future<void> _openDailySession(
+    DailySessionPlan plan,
+    BiblicalProgressSnapshot progress,
+  ) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => DailySessionScreen(
+          plan: plan,
+          progressStore: widget.progressStore,
+          initialProgress: progress,
+        ),
+      ),
+    );
+    await _reload();
   }
 
   Future<void> _openPractice(
@@ -92,6 +110,7 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
     final position = progress.drillPositionFor(lesson.id) + 1;
     final completed = progress.completedLessonIds.length;
     final reviewQueue = buildDueReviewQueue(progress);
+    final dailyPlan = buildDailySessionPlan(progress);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -131,7 +150,7 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'ACTIVE RECALL',
+                  'DAILY SESSION 12',
                   style: TextStyle(
                     color: _gold,
                     fontWeight: FontWeight.w900,
@@ -139,11 +158,9 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  completed == implementedBiblicalLessons.length
-                      ? 'Curso concluído. Continue consolidando mastery.'
-                      : 'Responda. Receba feedback. Consolide.',
-                  style: const TextStyle(
+                const Text(
+                  'Doze decisões. Revisar primeiro. Avançar depois.',
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     height: 1.1,
@@ -152,10 +169,53 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  'Lesson ${lesson.number.toString().padLeft(3, '0')} · ${lesson.title}\nDrill $position / ${lesson.drills.length}',
+                  '${dailyPlan.reviewCount} revisão · ${dailyPlan.newCount} novo · ${dailyPlan.reinforcementCount} reforço',
                   style: const TextStyle(color: Colors.white70, height: 1.45),
                 ),
                 const SizedBox(height: 18),
+                FilledButton.icon(
+                  onPressed: dailyPlan.items.isEmpty
+                      ? null
+                      : () => _openDailySession(dailyPlan, progress),
+                  style: FilledButton.styleFrom(backgroundColor: _blue),
+                  icon: const Icon(Icons.today_rounded),
+                  label: Text('INICIAR ${dailyPlan.items.length}/12'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'PRÁTICA LIVRE',
+                  style: TextStyle(
+                    color: _blue,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  completed == implementedBiblicalLessons.length
+                      ? 'Curso concluído. Continue consolidando mastery.'
+                      : 'Lesson ${lesson.number.toString().padLeft(3, '0')} · ${lesson.title} · Drill $position/${lesson.drills.length}',
+                  style: const TextStyle(
+                    color: _ink,
+                    fontSize: 17,
+                    height: 1.35,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 14),
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
@@ -168,10 +228,6 @@ class _DrillModeScreenState extends State<DrillModeScreen> {
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _openLesson(lesson, progress),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white54),
-                      ),
                       icon: const Icon(Icons.menu_book_rounded),
                       label: const Text('ESTUDAR LESSON'),
                     ),
