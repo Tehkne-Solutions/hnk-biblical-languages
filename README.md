@@ -25,8 +25,9 @@ Esperanto não é tratado como uma quarta tradução decorativa. Ele funciona co
 - Lesson 002 — **Identidade** — Êxodo 3:14 + João 1:6.
 - Lesson 003 — **Ser e Existir** — Gênesis 1:3 + João 1:3a–b.
 - Lesson 004 — **Casa e Família** — Gênesis 12:1 + Lucas 1:27.
+- Lesson 005 — **Tempo e Dias** — Gênesis 1:5 + Marcos 1:15.
 - 12 estruturas × 6 modos cognitivos = **72 drills por Lesson**.
-- **288 drills** nas quatro Lessons implementadas.
+- **360 drills** nas cinco Lessons implementadas.
 - Hebraico RTL.
 - Camadas de Português, Esperanto e transliteração desligáveis.
 - CODEX por palavra com lema, gloss, morfologia, edição, licença e atribuição.
@@ -78,4 +79,4 @@ Uma observação morfológica nunca deve ser apresentada automaticamente como co
 
 ## Próximo nível
 
-Lesson 005 — **Tempo e Dias** — Gênesis 1:5 + Marcos 1:15.
+Lesson 006 — **Corpo e Ações** — Deuteronômio 6:5 + Marcos 12:30.
