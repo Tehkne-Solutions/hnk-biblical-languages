@@ -120,9 +120,12 @@ class BiblicalProgressSnapshot {
     final nextMastery = correct
         ? (previousMastery + 1).clamp(0, maxMastery).toInt()
         : (previousMastery - 1).clamp(0, maxMastery).toInt();
-    final nextPosition = correct
-        ? (zeroBasedIndex + 1).clamp(0, 71).toInt()
-        : zeroBasedIndex;
+    final savedPosition = drillPositionFor(lessonId);
+    final candidatePosition =
+        correct ? (zeroBasedIndex + 1).clamp(0, 71).toInt() : savedPosition;
+    final nextPosition = candidatePosition > savedPosition
+        ? candidatePosition
+        : savedPosition;
     final nextStreak = _streakFor(eventAt);
     final dueAt = correct
         ? eventAt.add(Duration(days: _reviewIntervalDays(nextMastery)))
