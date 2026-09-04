@@ -96,15 +96,21 @@ Lesson 003:
 Lesson 004:
 - Gênesis 12:1 — OSHB / WLC.
 - Lucas 1:27 — SBLGNT; morphology reviewed against MorphGNT.
-- `מִבֵּית אָבִיךָ` is used to introduce construct relationship + possessive suffix.
-- `ἐξ οἴκου Δαυίδ` and `τὸ ὄνομα τῆς παρθένου` are used to introduce Greek genitive relations without claiming structural identity with Hebrew construct syntax.
+- Hebrew construct and Greek genitive remain explicitly non-identical mechanisms.
 
 Lesson 005:
 - Gênesis 1:5 — OSHB / WLC.
 - Marcos 1:15 — SBLGNT; morphology reviewed against MorphGNT.
-- `יוֹם אֶחָד` is preserved in the literal layer as “dia um”; “primeiro dia” belongs to the natural translation layer.
-- `πεπλήρωται` is treated as perfect middle/passive indicative 3sg and `ἤγγικεν` as perfect active indicative 3sg.
-- `καιρός` is presented as time/occasion appropriate or decisive according to context, not as an automatic theological category.
+- `יוֹם אֶחָד` is preserved in the literal layer as “dia um”.
+- `πεπλήρωται` and `ἤγγικεν` retain their perfect morphology before interpretive claims.
+
+Lesson 006:
+- Deuteronômio 6:5 — OSHB / WLC.
+- Marcos 12:30 — SBLGNT; morphology reviewed against MorphGNT.
+- `וְאָהַבְתָּ` remains Qal perfect 2ms even though its discourse function is command/obligation.
+- `ἀγαπήσεις` remains future active indicative 2sg even though it functions as a command in the citation.
+- `מְאֹדֶךָ` retains its formal relationship to the intensifier/adverb `מְאֹד`; “força” is a natural translation layer, not its full morphology.
+- Marcos's explicit `διάνοια` is not projected backward as a fourth lexical item into Deuteronomy 6:5.
 
 ## Publication gate
 
