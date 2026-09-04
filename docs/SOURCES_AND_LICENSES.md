@@ -4,41 +4,24 @@ Status: SOURCE POLICY ACTIVE
 
 ## Biblical Hebrew
 
-Primary source family:
+Primary source: Open Scriptures Hebrew Bible (OSHB), base Westminster Leningrad Codex (WLC).
 
-- Open Scriptures Hebrew Bible (OSHB)
-- Base text: Westminster Leningrad Codex (WLC)
-
-Licensing:
-
-- WLC text: Public Domain
-- OSHB lemma and morphology data: CC BY 4.0
-
-Attribution: Open Scriptures Hebrew Bible Project.
-
-Rules: learner display may remove cantillation while preserving consonants and vowel points; morphology describes form before interpretation; disputed syntax/exegesis belongs in marked notes.
+- WLC text: Public Domain.
+- OSHB lemma/morphology: CC BY 4.0.
+- Attribution: Open Scriptures Hebrew Bible Project.
 
 ## Koine Greek New Testament
 
-Primary text: SBL Greek New Testament (SBLGNT), project baseline v1.2.
-Morphological support: MorphGNT: SBLGNT Edition.
+Primary text: SBL Greek New Testament (SBLGNT) v1.2.
+Morphological support: MorphGNT SBLGNT Edition.
 
-Licensing:
-
-- SBLGNT electronic text: published SBLGNT EULA / permission terms; never label it CC BY 4.0.
+- SBLGNT electronic text: published SBLGNT EULA / permission terms; never label as CC BY 4.0.
 - MorphGNT parsing and lemmatization: CC BY-SA.
+- Attribution: SBL Greek New Testament, ed. Michael W. Holmes; MorphGNT, ed. James Tauber.
 
-Attribution: SBL Greek New Testament, ed. Michael W. Holmes; MorphGNT SBLGNT Edition, ed. James Tauber.
+## Editorial rules
 
-## Septuagint bridge forms
-
-Short LXX forms may appear only as explicitly labeled pedagogical bridges. Extended LXX passages require a separately documented canonical edition and license.
-
-## Portuguese and Esperanto
-
-Learner-facing Portuguese and Esperanto are course-authored pedagogical renderings unless a named edition is declared. Esperanto is a bridge language, not an authority layer over Hebrew or Greek.
-
-## Required analysis order
+Hebrew learner display may remove cantillation while preserving consonants/vowels. Short LXX forms may appear only as labeled bridges. Portuguese and Esperanto are course-authored pedagogical renderings unless an edition is explicitly declared.
 
 ```text
 source text
@@ -53,21 +36,22 @@ source text
 
 ## Current provenance
 
-- Lesson 001: Gênesis 1:1 — OSHB/WLC; João 1:1 — SBLGNT/MorphGNT.
-- Lesson 002: Êxodo 3:14 — OSHB/WLC; João 1:6 — SBLGNT/MorphGNT.
-- Lesson 003: Gênesis 1:3 — OSHB/WLC; João 1:3a–b — SBLGNT/MorphGNT.
-- Lesson 004: Gênesis 12:1 — OSHB/WLC; Lucas 1:27 — SBLGNT/MorphGNT.
-- Lesson 005: Gênesis 1:5 — OSHB/WLC; Marcos 1:15 — SBLGNT/MorphGNT.
-- Lesson 006: Deuteronômio 6:5 — OSHB/WLC; Marcos 12:30 — SBLGNT/MorphGNT.
-- Lesson 007: Gênesis 1:11–12 — OSHB/WLC; João 1:3–5 — SBLGNT/MorphGNT.
+- 001: Gênesis 1:1 — OSHB/WLC; João 1:1 — SBLGNT/MorphGNT.
+- 002: Êxodo 3:14 — OSHB/WLC; João 1:6 — SBLGNT/MorphGNT.
+- 003: Gênesis 1:3 — OSHB/WLC; João 1:3a–b — SBLGNT/MorphGNT.
+- 004: Gênesis 12:1 — OSHB/WLC; Lucas 1:27 — SBLGNT/MorphGNT.
+- 005: Gênesis 1:5 — OSHB/WLC; Marcos 1:15 — SBLGNT/MorphGNT.
+- 006: Deuteronômio 6:5 — OSHB/WLC; Marcos 12:30 — SBLGNT/MorphGNT.
+- 007: Gênesis 1:11–12 — OSHB/WLC; João 1:3–5 — SBLGNT/MorphGNT.
+- 008: 1 Samuel 8:5 — OSHB/WLC; Mateus 2:1 — SBLGNT/MorphGNT.
 
-### Lesson 007 safeguards
+### Lesson 008 safeguards
 
-- `תַּדְשֵׁא` permanece Hifil imperfeito jussivo 3fs.
-- `וַתּוֹצֵא` permanece Hifil consecutivo imperfeito 3fs.
-- `γέγονεν`, `φαίνει` e `κατέλαβεν` preservam respectivamente perfeito, presente e aoristo.
-- a pontuação em torno de `ὃ γέγονεν` é tratada como questão editorial avançada;
-- `καταλαμβάνω` não é reduzido a um único gloss teológico obrigatório.
+- `שִׂימָה־לָּנוּ` permanece imperativo Qal 2ms + “para nós”.
+- `לְשָׁפְטֵנוּ` permanece infinitivo construto Qal + sufixo 1cp.
+- `γεννηθέντος` permanece particípio aoristo passivo genitivo.
+- `ἀπό` e `εἰς` são tratados como origem e direção no contexto, sem apagar seus regimes sintáticos.
+- gramática de títulos, povos e lugares não é automaticamente convertida em reconstrução histórica ou teológica.
 
 ## Publication gate
 
