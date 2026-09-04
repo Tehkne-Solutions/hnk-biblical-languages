@@ -2,6 +2,7 @@ import '../models/biblical_lesson.dart';
 import '../progress/biblical_progress.dart';
 import 'course_registry.dart';
 import 'drill_practice_factory.dart';
+import 'learning_analytics.dart';
 
 enum DailySessionItemKind { review, newContent, reinforcement }
 
@@ -45,6 +46,8 @@ DailySessionPlan buildDailySessionPlan(
   final items = <DailySessionItem>[];
   final seen = <String>{};
   final due = buildDueReviewQueue(progress, now: now);
+  final analytics = buildLearningAnalytics(progress, now: now);
+  final languagePriority = analytics.languagePriority;
 
   void addItem(
     BiblicalLesson lesson,
@@ -121,11 +124,19 @@ DailySessionPlan buildDailySessionPlan(
       }
     }
 
+    int languageRank(DrillItem drill) {
+      if (languagePriority.isEmpty) return 0;
+      final rank = languagePriority.indexOf(targetForVariant(drill.variant));
+      return rank < 0 ? languagePriority.length : rank;
+    }
+
     candidates.sort((a, b) {
       final masteryCompare = progress
           .masteryFor(a.drill.id)
           .compareTo(progress.masteryFor(b.drill.id));
       if (masteryCompare != 0) return masteryCompare;
+      final languageCompare = languageRank(a.drill).compareTo(languageRank(b.drill));
+      if (languageCompare != 0) return languageCompare;
       final lessonCompare = a.lesson.number.compareTo(b.lesson.number);
       if (lessonCompare != 0) return lessonCompare;
       return a.index.compareTo(b.index);
