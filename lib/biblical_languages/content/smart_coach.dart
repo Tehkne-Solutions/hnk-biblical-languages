@@ -41,6 +41,44 @@ class SmartCoachRecommendation {
       : 'Formar linha de base · Modo $mode';
 }
 
+enum SmartCoachDecision {
+  maintainFocus,
+  changeMode,
+  changeLanguage,
+  advance,
+}
+
+class SmartCoachOutcome {
+  const SmartCoachOutcome({
+    required this.session,
+    required this.decision,
+    required this.masteryBefore,
+    required this.masteryAfter,
+    required this.masteryDelta,
+    required this.rationale,
+  });
+
+  final PracticeSessionRecord session;
+  final SmartCoachDecision decision;
+  final double masteryBefore;
+  final double masteryAfter;
+  final double masteryDelta;
+  final String rationale;
+
+  String get decisionLabel {
+    switch (decision) {
+      case SmartCoachDecision.maintainFocus:
+        return 'MANTER FOCO';
+      case SmartCoachDecision.changeMode:
+        return 'TROCAR MODO';
+      case SmartCoachDecision.changeLanguage:
+        return 'TROCAR IDIOMA';
+      case SmartCoachDecision.advance:
+        return 'AVANÇAR';
+    }
+  }
+}
+
 SmartCoachRecommendation buildSmartCoachRecommendation(
   BiblicalProgressSnapshot progress, {
   DateTime? now,
@@ -72,7 +110,8 @@ SmartCoachRecommendation buildSmartCoachRecommendation(
       .toList(growable: false)
     ..sort(_dimensionWeakestFirst);
 
-  final mode = targetModes.isEmpty ? _baselineMode(target) : _modeFromMetric(targetModes.first);
+  final mode =
+      targetModes.isEmpty ? _baselineMode(target) : _modeFromMetric(targetModes.first);
   final lessonCandidates = <({int number, MasteryMapCell cell})>[];
 
   for (final row in map.rows) {
@@ -157,7 +196,8 @@ DailySessionPlan buildSmartCoachSession(
     if (!_lessonUnlocked(progress, lesson.number)) continue;
     for (var index = 0; index < lesson.drills.length; index++) {
       final drill = lesson.drills[index];
-      if (!progress.masteryByDrillId.containsKey(drill.id) || seen.contains(drill.id)) {
+      if (!progress.masteryByDrillId.containsKey(drill.id) ||
+          seen.contains(drill.id)) {
         continue;
       }
       if (targetForVariant(drill.variant) == recommendation.target) {
@@ -182,7 +222,8 @@ DailySessionPlan buildSmartCoachSession(
         .compareTo(progress.masteryFor(b.drill.id));
     if (mastery != 0) return mastery;
 
-    final lesson = lessonRank(a.lesson.number).compareTo(lessonRank(b.lesson.number));
+    final lesson =
+        lessonRank(a.lesson.number).compareTo(lessonRank(b.lesson.number));
     if (lesson != 0) return lesson;
     final lessonNumber = a.lesson.number.compareTo(b.lesson.number);
     if (lessonNumber != 0) return lessonNumber;
@@ -200,7 +241,8 @@ DailySessionPlan buildSmartCoachSession(
   }
 
   if (items.length < targetSize) {
-    final fallback = buildDailySessionPlan(progress, now: now, targetSize: targetSize);
+    final fallback =
+        buildDailySessionPlan(progress, now: now, targetSize: targetSize);
     for (final item in fallback.items) {
       add(item.lesson, item.drill, item.zeroBasedIndex, item.kind);
       if (items.length == targetSize) break;
@@ -208,6 +250,142 @@ DailySessionPlan buildSmartCoachSession(
   }
 
   return DailySessionPlan(items: List<DailySessionItem>.unmodifiable(items));
+}
+
+double smartCoachFocusMastery(
+  BiblicalProgressSnapshot progress,
+  SmartCoachRecommendation recommendation,
+) {
+  final lessonNumbers = recommendation.lessonNumbers.toSet();
+  var attempted = 0;
+  var mastery = 0;
+
+  for (final lesson in implementedBiblicalLessons) {
+    if (!lessonNumbers.contains(lesson.number)) continue;
+    for (final drill in lesson.drills) {
+      if (drill.variant != recommendation.mode ||
+          !progress.masteryByDrillId.containsKey(drill.id)) {
+        continue;
+      }
+      attempted += 1;
+      mastery += progress.masteryFor(drill.id);
+    }
+  }
+
+  return attempted == 0 ? 0 : mastery / attempted;
+}
+
+int smartCoachFocusedItemCount(
+  DailySessionPlan plan,
+  SmartCoachRecommendation recommendation,
+) {
+  final lessonNumbers = recommendation.lessonNumbers.toSet();
+  return plan.items.where((item) {
+    return lessonNumbers.contains(item.lesson.number) &&
+        item.drill.variant == recommendation.mode &&
+        targetForVariant(item.drill.variant) == recommendation.target;
+  }).length;
+}
+
+SmartCoachOutcome? buildLatestSmartCoachOutcome(
+  BiblicalProgressSnapshot progress,
+) {
+  PracticeSessionRecord? session;
+  for (final candidate in progress.practiceSessions.reversed) {
+    if (candidate.coachSession &&
+        candidate.coachTargetKey != null &&
+        candidate.coachMode != null &&
+        candidate.coachMasteryBefore != null &&
+        candidate.coachMasteryAfter != null) {
+      session = candidate;
+      break;
+    }
+  }
+  if (session == null) return null;
+
+  final before = session.coachMasteryBefore!;
+  final after = session.coachMasteryAfter!;
+  final delta = after - before;
+
+  if (session.coachBaseline) {
+    return SmartCoachOutcome(
+      session: session,
+      decision: SmartCoachDecision.advance,
+      masteryBefore: before,
+      masteryAfter: after,
+      masteryDelta: delta,
+      rationale:
+          'A linha de base foi registrada. O Coach já pode recalcular o ponto mais frágil usando dados reais.',
+    );
+  }
+
+  if (session.coachFocusedItemCount == 0) {
+    return SmartCoachOutcome(
+      session: session,
+      decision: SmartCoachDecision.maintainFocus,
+      masteryBefore: before,
+      masteryAfter: after,
+      masteryDelta: delta,
+      rationale:
+          'As revisões vencidas consumiram a sessão e o foco prescrito não recebeu exposição real. A prescrição será mantida.',
+    );
+  }
+
+  final previousTarget = _targetFromKey(session.coachTargetKey!);
+  final current = buildSmartCoachRecommendation(progress);
+  if (previousTarget != null && current.target != previousTarget) {
+    return SmartCoachOutcome(
+      session: session,
+      decision: SmartCoachDecision.changeLanguage,
+      masteryBefore: before,
+      masteryAfter: after,
+      masteryDelta: delta,
+      rationale:
+          'O idioma mais frágil mudou depois da sessão. O próximo foco deve acompanhar o novo gargalo linguístico.',
+    );
+  }
+
+  if (current.mode != session.coachMode) {
+    return SmartCoachOutcome(
+      session: session,
+      decision: SmartCoachDecision.changeMode,
+      masteryBefore: before,
+      masteryAfter: after,
+      masteryDelta: delta,
+      rationale:
+          'Dentro do mesmo idioma, outro modo cognitivo agora apresenta menor domínio. O Coach deslocará o treino para ele.',
+    );
+  }
+
+  if (after >= 3.0 && delta >= 0.25) {
+    return SmartCoachOutcome(
+      session: session,
+      decision: SmartCoachDecision.advance,
+      masteryBefore: before,
+      masteryAfter: after,
+      masteryDelta: delta,
+      rationale:
+          'O foco respondeu bem e atingiu domínio funcional. O Coach pode avançar para o próximo ponto frágil sem abandonar as revisões.',
+    );
+  }
+
+  return SmartCoachOutcome(
+    session: session,
+    decision: SmartCoachDecision.maintainFocus,
+    masteryBefore: before,
+    masteryAfter: after,
+    masteryDelta: delta,
+    rationale:
+        'O ganho ainda não é suficiente para abandonar este foco. A próxima sessão preservará a prescrição enquanto o mastery consolida.',
+  );
+}
+
+AnalyticsTarget? _targetFromKey(String key) {
+  try {
+    return analyticsTargetFromKey(key);
+  } on ArgumentError {
+    return null;
+  }
 }
 
 int _modeFromMetric(LearningDimensionMetrics metric) =>
