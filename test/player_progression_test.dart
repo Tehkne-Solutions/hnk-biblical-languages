@@ -18,7 +18,7 @@ Future<void> _scrollDownUntilText(WidgetTester tester, String text) async {
 }
 
 void main() {
-  test('schema v3 records and restores practice session history', () {
+  test('schema v4 records and restores practice session history', () {
     final at = DateTime.utc(2026, 9, 4, 18);
     final snapshot = const BiblicalProgressSnapshot().recordPracticeSession(
       itemCount: 12,
@@ -34,10 +34,11 @@ void main() {
 
     final restored = BiblicalProgressSnapshot.fromJson(snapshot.toJson());
 
-    expect(restored.schemaVersion, 3);
+    expect(restored.schemaVersion, 4);
     expect(restored.practiceSessions, hasLength(1));
     expect(restored.practiceSessions.single.accuracy, 92);
     expect(restored.practiceSessions.single.xpGained, 120);
+    expect(restored.practiceSessions.single.coachSession, isFalse);
     expect(restored.dailyGoalCompletedOn(at), isTrue);
     expect(
       restored.dailyGoalCompletedOn(at.add(const Duration(days: 1))),
@@ -58,10 +59,34 @@ void main() {
       'lastPracticeDay': '2026-09-04T00:00:00Z',
     });
 
-    expect(restored.schemaVersion, 3);
+    expect(restored.schemaVersion, 4);
     expect(restored.xp, 120);
     expect(restored.masteryFor('d1'), 2);
     expect(restored.practiceSessions, isEmpty);
+  });
+
+  test('schema v3 session migrates without invented Coach metadata', () {
+    final restored = BiblicalProgressSnapshot.fromJson({
+      'schemaVersion': 3,
+      'practiceSessions': [
+        {
+          'completedAt': '2026-09-04T18:00:00Z',
+          'itemCount': 12,
+          'attempts': 12,
+          'correctAttempts': 10,
+          'xpGained': 100,
+          'masteryImproved': 8,
+          'reviewCount': 2,
+          'newCount': 8,
+          'reinforcementCount': 2,
+        },
+      ],
+    });
+
+    expect(restored.schemaVersion, 4);
+    expect(restored.practiceSessions, hasLength(1));
+    expect(restored.practiceSessions.single.coachSession, isFalse);
+    expect(restored.practiceSessions.single.coachTargetKey, isNull);
   });
 
   test('rank progression follows learning XP thresholds', () {
