@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics, Mastery Map, Smart Coach e Coach Outcome Loop.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics, Mastery Map, Smart Coach, Coach Outcome Loop e Learning Path.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -189,8 +189,6 @@ Regras:
 
 Depois de uma sessão iniciada pelo Smart Coach, a plataforma não assume que a prescrição funcionou: ela mede o resultado.
 
-O ciclo é:
-
 ```text
 prescrição
 → sessão focada
@@ -201,39 +199,40 @@ prescrição
 → próxima prescrição
 ```
 
-O histórico da sessão registra, apenas quando ela vem do Coach:
+O histórico da sessão registra idioma/modo/Lessons prescritos, exposição real, mastery antes/depois e delta. O Coach escolhe **MANTER FOCO**, **TROCAR MODO**, **TROCAR IDIOMA** ou **AVANÇAR**. Sessão sem item real de foco não é tratada como falha da prescrição. Como os metadados vivem no schema v4, a decisão pode ser reconstruída após reiniciar o app.
 
-- idioma-alvo e modo cognitivo prescritos;
-- até 3 Lessons de foco;
-- quantidade de itens da sessão que realmente testaram o foco;
-- mastery médio do foco antes e depois da sessão;
-- delta de mastery.
+### LEARNING PATH ENGINE V1
 
-O Coach então escolhe uma de quatro decisões:
+O Learning Path usa o estado atual + Outcomes persistidos para projetar uma rota adaptativa de médio prazo rumo a **mastery 5 no material já introduzido**.
 
 ```text
-MANTER FOCO
-TROCAR MODO
-TROCAR IDIOMA
-AVANÇAR
+foco atual do Smart Coach
+→ até 4 próximos checkpoints
+→ mastery / revisões / trend de Outcomes
+→ condição objetiva para avançar
+→ treino do checkpoint atual
+→ novo Outcome
+→ rota recalculada
 ```
 
-Regras de decisão:
+Regras:
 
-- **0 itens reais de foco:** mantém a prescrição; uma sessão consumida por revisões vencidas não é tratada como falha do Coach;
-- se outro idioma se torna o gargalo global, escolhe **TROCAR IDIOMA**;
-- se outro modo do mesmo idioma se torna o gargalo, escolhe **TROCAR MODO**;
-- ganho relevante com mastery funcional permite **AVANÇAR**;
-- nos demais casos, escolhe **MANTER FOCO** até consolidar;
-- uma sessão de linha de base é registrada como formação de perfil e libera a reavaliação personalizada seguinte.
-
-O resultado da última sessão aparece no próprio Smart Coach com mastery antes → depois, delta, acurácia, quantidade de itens focados e justificativa da decisão. Como os metadados vivem no schema v4, a decisão pode ser reconstruída após reiniciar o app.
+- a rota tem no máximo **5 checkpoints** e é recalculada depois de cada sessão;
+- o checkpoint 1 é sempre coerente com a prescrição atual do Smart Coach;
+- os próximos checkpoints priorizam menor mastery, Outcomes mais estagnados, revisões vencidas e exposição real;
+- cada checkpoint aponta até 3 Lessons já desbloqueadas onde o modo precisa de mais consolidação;
+- são usados até os **5 Outcomes mais recentes por idioma/modo** para classificar o trend como `SEM HISTÓRICO`, `EM EVOLUÇÃO`, `ESTÁVEL` ou `PEDE REFORÇO`;
+- modo já em mastery 5 e sem revisão vencida sai da rota;
+- conteúdo ainda não introduzido **não é antecipado pelo Path**: continua exclusivamente pela sequência Academy/Daily Session;
+- treinar o checkpoint atual reutiliza o mesmo Smart Coach + Daily Session + Outcome Loop;
+- nenhum schema novo foi necessário: a rota é derivada do schema v4 existente.
 
 Fluxos:
 
 ```text
-DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → SMART COACH → SESSÃO FOCADA
-SMART COACH → OUTCOME LOOP → NOVA PRESCRIÇÃO
+DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → SMART COACH → LEARNING PATH
+SMART COACH → SESSÃO FOCADA → OUTCOME LOOP → NOVA PRESCRIÇÃO
+LEARNING PATH → CHECKPOINT ATUAL → OUTCOME LOOP → ROTA RECALCULADA
 LEARNING ANALYTICS → MASTERY MAP
 ```
 
@@ -270,6 +269,7 @@ lib/
       learning_analytics.dart
       mastery_map.dart
       smart_coach.dart
+      learning_path.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -285,6 +285,7 @@ lib/
       learning_analytics_screen.dart
       mastery_map_screen.dart
       smart_coach_screen.dart
+      learning_path_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -331,6 +332,11 @@ O `main` deve permanecer verde em:
 - Smart Coach mantém revisões vencidas primeiro e nunca usa Lesson bloqueada;
 - Coach Outcome Loop persiste before/after, exposição ao foco e as quatro decisões;
 - sessão sem exposição real ao foco não altera artificialmente a prescrição;
+- Learning Path mantém o foco atual em primeiro e projeta no máximo 5 checkpoints;
+- Learning Path usa apenas Lessons desbloqueadas e material já introduzido;
+- Outcomes recentes influenciam o trend de cada checkpoint;
+- modo consolidado em mastery 5 sem due review sai da rota;
+- navegação Smart Coach → Learning Path;
 - navegação Learning Analytics → Smart Coach;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
