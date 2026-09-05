@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics e Mastery Map.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics, Mastery Map e Smart Coach.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -159,13 +159,38 @@ Cada uma das 72 células resume os 12 drills daquela Lesson/modo e mostra:
 
 Cada linha da Lesson também mostra cobertura da Lesson e mastery agregado. O cabeçalho resume cobertura global sobre os **864 drills**, mastery médio e total de revisões vencidas.
 
-Fluxo de navegação:
+O mapa é responsivo: os seis modos aparecem em duas linhas de três células por Lesson, evitando uma tabela horizontal extensa em mobile.
+
+### SMART COACH V1
+
+O Smart Coach transforma o Analytics e o Mastery Map em uma **prescrição concreta de prática** sem criar um segundo motor de aprendizagem.
+
+A recomendação segue:
 
 ```text
-DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → MASTERY MAP
+idioma mais frágil
+→ modo mais frágil dentro desse idioma
+→ até 3 Lessons desbloqueadas com menor mastery nesse modo
+→ sessão focada de até 12 itens
 ```
 
-O mapa é responsivo: os seis modos aparecem em duas linhas de três células por Lesson, evitando uma tabela horizontal extensa em mobile.
+Regras:
+
+- revisões vencidas continuam com prioridade absoluta;
+- reforço focado usa apenas drills que o aluno já tentou;
+- apenas Lessons desbloqueadas podem entrar no foco;
+- conteúdo inédito continua exclusivamente pela sequência canônica;
+- se faltarem itens focados, a Daily Session canônica completa as vagas;
+- a sessão focada usa o mesmo runtime de XP, retry, mastery, streak, histórico e spaced repetition;
+- sem dados suficientes, o Coach inicia uma sessão de linha de base na Lesson ativa;
+- a recomendação é linguística/pedagógica e não produz conclusão espiritual ou teológica.
+
+Fluxos:
+
+```text
+DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → SMART COACH → SESSÃO FOCADA
+LEARNING ANALYTICS → MASTERY MAP
+```
 
 ## Contrato editorial
 
@@ -199,6 +224,7 @@ lib/
       player_progression.dart
       learning_analytics.dart
       mastery_map.dart
+      smart_coach.dart
       biblical_library.dart
       lesson_001...lesson_012
     models/
@@ -213,6 +239,7 @@ lib/
       player_progress_screen.dart
       learning_analytics_screen.dart
       mastery_map_screen.dart
+      smart_coach_screen.dart
       codex_mode_screen.dart
       scripture_mode_screen.dart
       quest_mode_screen.dart
@@ -255,6 +282,9 @@ O `main` deve permanecer verde em:
 - navegação Player Progression → Learning Analytics;
 - Mastery Map 12×6 com 864 drills canônicos;
 - navegação Learning Analytics → Mastery Map;
+- Smart Coach com baseline, foco por idioma/modo/Lesson e sessão focada;
+- Smart Coach mantém revisões vencidas primeiro e nunca usa Lesson bloqueada;
+- navegação Learning Analytics → Smart Coach;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
 - conclusão end-to-end 12/12;
