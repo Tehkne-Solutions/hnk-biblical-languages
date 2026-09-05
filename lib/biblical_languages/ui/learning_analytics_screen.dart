@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../content/learning_analytics.dart';
 import '../progress/biblical_progress.dart';
 import 'mastery_map_screen.dart';
+import 'smart_coach_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
@@ -13,9 +14,11 @@ class LearningAnalyticsScreen extends StatelessWidget {
   const LearningAnalyticsScreen({
     super.key,
     required this.progress,
+    this.progressStore = const SharedPreferencesBiblicalProgressStore(),
   });
 
   final BiblicalProgressSnapshot progress;
+  final BiblicalProgressStore progressStore;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,18 @@ class LearningAnalyticsScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         title: const Text('LEARNING ANALYTICS'),
         actions: [
+          IconButton(
+            tooltip: 'Smart Coach',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => SmartCoachScreen(
+                  initialProgress: progress,
+                  progressStore: progressStore,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.psychology_alt_rounded),
+          ),
           IconButton(
             tooltip: 'Mastery Map',
             onPressed: () => Navigator.of(context).push(
