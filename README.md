@@ -28,7 +28,7 @@ Português → Esperanto → Hebraico Bíblico + Grego Koiné → Escrituras →
 O app não abre mais diretamente em uma única tela de curso. O entrypoint usa um hub com cinco modos funcionais:
 
 1. **ACADEMY** — mapa completo de 12 níveis, progressão e Lessons.
-2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics, Mastery Map e Smart Coach.
+2. **DRILL** — prática interativa derivada dos 864 drills canônicos, com resposta objetiva, Daily Session 12, feedback imediato, XP, streak, mastery, revisão espaçada, Player Progression, Learning Analytics, Mastery Map, Smart Coach e Coach Outcome Loop.
 3. **CODEX** — índice pesquisável por escrita original, transliteração, lema, gloss, morfologia e referência; detalhe mostra proveniência e licença.
 4. **SCRIPTURE** — biblioteca deduplicada das passagens canônicas usadas pelo curso, com texto-fonte, transliteração, tradução pedagógica e atribuição.
 5. **QUEST** — os 12 Final Quests, desbloqueados pela mesma progressão canônica do curso.
@@ -111,7 +111,7 @@ O dashboard de Player Progression, acessível pelo perfil no DRILL, mostra:
 - **12 conquistas** baseadas em prática observável, como streak, XP, Lessons, mastery, sessão perfeita e número de sessões;
 - histórico das 12 sessões mais recentes na interface.
 
-O progresso persistente usa **schema v3** e mantém migração automática de saves v1 e v2. O histórico persistido é limitado às **90 sessões mais recentes**, evitando crescimento indefinido do armazenamento local.
+O progresso persistente usa **schema v4** e mantém migração automática de saves v1, v2 e v3. O histórico persistido é limitado às **90 sessões mais recentes**, evitando crescimento indefinido do armazenamento local. Sessões comuns permanecem sem metadados do Coach; somente sessões iniciadas pelo Smart Coach recebem os campos opcionais do Outcome Loop.
 
 ### LEARNING ANALYTICS V1
 
@@ -185,10 +185,55 @@ Regras:
 - sem dados suficientes, o Coach inicia uma sessão de linha de base na Lesson ativa;
 - a recomendação é linguística/pedagógica e não produz conclusão espiritual ou teológica.
 
+### COACH OUTCOME LOOP V1
+
+Depois de uma sessão iniciada pelo Smart Coach, a plataforma não assume que a prescrição funcionou: ela mede o resultado.
+
+O ciclo é:
+
+```text
+prescrição
+→ sessão focada
+→ mastery do foco antes/depois
+→ exposição real ao foco
+→ Analytics recalculado
+→ decisão
+→ próxima prescrição
+```
+
+O histórico da sessão registra, apenas quando ela vem do Coach:
+
+- idioma-alvo e modo cognitivo prescritos;
+- até 3 Lessons de foco;
+- quantidade de itens da sessão que realmente testaram o foco;
+- mastery médio do foco antes e depois da sessão;
+- delta de mastery.
+
+O Coach então escolhe uma de quatro decisões:
+
+```text
+MANTER FOCO
+TROCAR MODO
+TROCAR IDIOMA
+AVANÇAR
+```
+
+Regras de decisão:
+
+- **0 itens reais de foco:** mantém a prescrição; uma sessão consumida por revisões vencidas não é tratada como falha do Coach;
+- se outro idioma se torna o gargalo global, escolhe **TROCAR IDIOMA**;
+- se outro modo do mesmo idioma se torna o gargalo, escolhe **TROCAR MODO**;
+- ganho relevante com mastery funcional permite **AVANÇAR**;
+- nos demais casos, escolhe **MANTER FOCO** até consolidar;
+- uma sessão de linha de base é registrada como formação de perfil e libera a reavaliação personalizada seguinte.
+
+O resultado da última sessão aparece no próprio Smart Coach com mastery antes → depois, delta, acurácia, quantidade de itens focados e justificativa da decisão. Como os metadados vivem no schema v4, a decisão pode ser reconstruída após reiniciar o app.
+
 Fluxos:
 
 ```text
 DRILL → PLAYER PROGRESSION → LEARNING ANALYTICS → SMART COACH → SESSÃO FOCADA
+SMART COACH → OUTCOME LOOP → NOVA PRESCRIÇÃO
 LEARNING ANALYTICS → MASTERY MAP
 ```
 
@@ -267,7 +312,7 @@ O `main` deve permanecer verde em:
 - `flutter analyze --no-fatal-infos`;
 - contratos linguísticos/proveniência;
 - progressão e persistência;
-- migração de progresso v1/v2 → v3;
+- migração de progresso v1/v2/v3 → v4;
 - XP, streak, mastery e scheduling de revisão;
 - resposta errada → retry → resposta correta no runtime DRILL;
 - revisão antiga não regride o cursor da Lesson;
@@ -284,6 +329,8 @@ O `main` deve permanecer verde em:
 - navegação Learning Analytics → Mastery Map;
 - Smart Coach com baseline, foco por idioma/modo/Lesson e sessão focada;
 - Smart Coach mantém revisões vencidas primeiro e nunca usa Lesson bloqueada;
+- Coach Outcome Loop persiste before/after, exposição ao foco e as quatro decisões;
+- sessão sem exposição real ao foco não altera artificialmente a prescrição;
 - navegação Learning Analytics → Smart Coach;
 - navegação Academy → Lesson;
 - fluxo avançado Plano → Estudo → Catálogo;
