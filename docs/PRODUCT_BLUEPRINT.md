@@ -1,6 +1,6 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: **V1 COURSE COMPLETE / PLATFORM PHASE 2 ACTIVE / SMART COACH V1**
+Status: **V1 COURSE COMPLETE / PLATFORM PHASE 2 ACTIVE / SMART COACH + OUTCOME LOOP V1**
 
 ## Thesis
 
@@ -111,6 +111,7 @@ A Fase 2 transforma o curso completo em plataforma de prática recorrente sem du
 → Learning Analytics
 → Mastery Map 12×6
 → Smart Coach
+→ Coach Outcome Loop
 ```
 
 ### DRILL Interactive
@@ -137,7 +138,7 @@ Lessons bloqueadas nunca entram como conteúdo novo. O mesmo `recordDrillResult`
 
 A camada meta usa ranks de aprendizagem, conquistas, meta diária e histórico de sessões. Ela não cria títulos espirituais nem substitui competência linguística por pontos.
 
-O progresso persiste em schema v3, com migração automática de v1/v2 e histórico limitado às 90 sessões mais recentes.
+O progresso persiste em **schema v4**, com migração automática de v1/v2/v3 e histórico limitado às 90 sessões mais recentes. Os metadados adicionais do Coach são opcionais e aparecem apenas nas sessões iniciadas por ele.
 
 ### Learning Analytics V1
 
@@ -185,6 +186,49 @@ Regras de segurança pedagógica:
 7. sem dados suficientes, o Coach inicia uma sessão de linha de base na Lesson ativa;
 8. a recomendação é linguística e pedagógica, nunca uma conclusão espiritual ou teológica.
 
+### Coach Outcome Loop V1
+
+O Smart Coach agora avalia a própria prescrição depois da sessão.
+
+```text
+prescrever
+→ praticar
+→ medir mastery do foco antes/depois
+→ confirmar quantos itens realmente expuseram o foco
+→ recalcular Analytics
+→ decidir
+→ represcrever
+```
+
+Uma sessão de Coach persiste:
+
+- idioma-alvo;
+- modo cognitivo;
+- Lessons de foco;
+- número de itens realmente focados;
+- mastery antes e depois;
+- delta de mastery.
+
+Decisões possíveis:
+
+```text
+MANTER FOCO
+TROCAR MODO
+TROCAR IDIOMA
+AVANÇAR
+```
+
+Critérios centrais:
+
+1. se nenhum item do foco entrou porque revisões vencidas ocuparam a sessão, a prescrição é mantida e o resultado não é tratado como falha;
+2. se o gargalo global muda de idioma, o Coach troca idioma;
+3. se o gargalo muda apenas de modo dentro do mesmo idioma, troca modo;
+4. se o foco alcança mastery funcional com ganho relevante, avança;
+5. caso contrário, mantém o foco para consolidação;
+6. uma sessão de baseline forma o perfil inicial e libera a próxima prescrição personalizada.
+
+A decisão é reconstruível depois de reiniciar o app porque o Outcome Loop faz parte do schema v4, não apenas do estado transitório da tela.
+
 Fluxo principal:
 
 ```text
@@ -193,6 +237,8 @@ DRILL
 → LEARNING ANALYTICS
 → SMART COACH
 → SESSÃO FOCADA
+→ OUTCOME LOOP
+→ NOVA PRESCRIÇÃO
 
 LEARNING ANALYTICS
 → MASTERY MAP
@@ -211,12 +257,14 @@ O `main` só é considerado saudável quando passa:
 - `flutter analyze --no-fatal-infos`;
 - contratos linguísticos e de proveniência;
 - progressão e unlock 001–012;
-- persistência e migração v1/v2 → v3;
+- persistência e migração v1/v2/v3 → v4;
 - DRILL, XP, streak, mastery e spaced repetition;
 - Daily Session: revisão → novo → reforço;
 - Player Progression e histórico;
 - Learning Analytics por idioma/modo;
 - Mastery Map 12×6;
 - Smart Coach: baseline, recomendação personalizada, due-first, bloqueio de Lessons futuras e navegação;
+- Coach Outcome Loop: persistência de target/mode/Lessons/exposição/before-after e quatro decisões;
+- sessão sem itens do foco mantém a prescrição em vez de gerar falsa adaptação;
 - conclusão end-to-end 12/12;
 - navegação e dados dos cinco modos da plataforma.
