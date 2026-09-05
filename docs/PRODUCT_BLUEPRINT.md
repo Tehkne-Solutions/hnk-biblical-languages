@@ -1,6 +1,6 @@
 # HNK Biblical Languages — Product Blueprint
 
-Status: **V1 COURSE COMPLETE / PLATFORM PHASE 2 ACTIVE / SMART COACH + OUTCOME LOOP V1**
+Status: **V1 COURSE COMPLETE / PLATFORM PHASE 2 ACTIVE / SMART COACH + OUTCOME LOOP + LEARNING PATH V1**
 
 ## Thesis
 
@@ -112,6 +112,7 @@ A Fase 2 transforma o curso completo em plataforma de prática recorrente sem du
 → Mastery Map 12×6
 → Smart Coach
 → Coach Outcome Loop
+→ Learning Path
 ```
 
 ### DRILL Interactive
@@ -188,7 +189,7 @@ Regras de segurança pedagógica:
 
 ### Coach Outcome Loop V1
 
-O Smart Coach agora avalia a própria prescrição depois da sessão.
+O Smart Coach avalia a própria prescrição depois da sessão.
 
 ```text
 prescrever
@@ -200,34 +201,43 @@ prescrever
 → represcrever
 ```
 
-Uma sessão de Coach persiste:
+Uma sessão de Coach persiste idioma-alvo, modo cognitivo, Lessons de foco, número de itens realmente focados, mastery antes/depois e delta. As decisões possíveis são **MANTER FOCO**, **TROCAR MODO**, **TROCAR IDIOMA** e **AVANÇAR**. Se nenhum item do foco entra porque as revisões vencidas ocupam a sessão, a prescrição é mantida em vez de gerar falsa adaptação.
 
-- idioma-alvo;
-- modo cognitivo;
-- Lessons de foco;
-- número de itens realmente focados;
-- mastery antes e depois;
-- delta de mastery.
+### Learning Path Engine V1
 
-Decisões possíveis:
+O Learning Path leva a adaptação do horizonte de uma sessão para uma sequência de médio prazo.
 
 ```text
-MANTER FOCO
-TROCAR MODO
-TROCAR IDIOMA
-AVANÇAR
+prescrição atual
+→ checkpoint 1
+→ checkpoints 2–5 projetados
+→ treino do checkpoint atual
+→ Outcome persistido
+→ rota recalculada
 ```
 
-Critérios centrais:
+Cada checkpoint contém:
 
-1. se nenhum item do foco entrou porque revisões vencidas ocuparam a sessão, a prescrição é mantida e o resultado não é tratado como falha;
-2. se o gargalo global muda de idioma, o Coach troca idioma;
-3. se o gargalo muda apenas de modo dentro do mesmo idioma, troca modo;
-4. se o foco alcança mastery funcional com ganho relevante, avança;
-5. caso contrário, mantém o foco para consolidação;
-6. uma sessão de baseline forma o perfil inicial e libera a próxima prescrição personalizada.
+- idioma-alvo e modo cognitivo;
+- até 3 Lessons já desbloqueadas de maior necessidade;
+- mastery médio do material já introduzido;
+- revisões vencidas;
+- número de Outcomes recentes usados como evidência;
+- delta médio recente;
+- trend `SEM HISTÓRICO`, `EM EVOLUÇÃO`, `ESTÁVEL` ou `PEDE REFORÇO`;
+- condição objetiva para avançar em direção a mastery 5.
 
-A decisão é reconstruível depois de reiniciar o app porque o Outcome Loop faz parte do schema v4, não apenas do estado transitório da tela.
+Regras:
+
+1. no máximo 5 checkpoints são projetados;
+2. o checkpoint 1 acompanha o foco atual do Smart Coach;
+3. os próximos combinam menor mastery, histórico de Outcomes, due reviews e exposição;
+4. cada trend olha até os 5 Outcomes mais recentes daquele idioma/modo;
+5. modo em mastery 5 e sem revisão vencida deixa a rota;
+6. material ainda não introduzido não é antecipado pelo Path;
+7. conteúdo novo permanece governado por Academy/Daily Session e unlock canônico;
+8. o botão de treino existe apenas no checkpoint atual e reutiliza Smart Coach + Daily Session + Outcome Loop;
+9. a rota é inteiramente derivada do schema v4 e não exige nova migração.
 
 Fluxo principal:
 
@@ -236,9 +246,11 @@ DRILL
 → PLAYER PROGRESSION
 → LEARNING ANALYTICS
 → SMART COACH
+→ LEARNING PATH
+→ CHECKPOINT ATUAL
 → SESSÃO FOCADA
 → OUTCOME LOOP
-→ NOVA PRESCRIÇÃO
+→ ROTA RECALCULADA
 
 LEARNING ANALYTICS
 → MASTERY MAP
@@ -266,5 +278,8 @@ O `main` só é considerado saudável quando passa:
 - Smart Coach: baseline, recomendação personalizada, due-first, bloqueio de Lessons futuras e navegação;
 - Coach Outcome Loop: persistência de target/mode/Lessons/exposição/before-after e quatro decisões;
 - sessão sem itens do foco mantém a prescrição em vez de gerar falsa adaptação;
+- Learning Path: baseline, máximo de 5 checkpoints, foco atual em primeiro e Lessons bloqueadas ausentes;
+- Outcomes recentes influenciam trend e modo em mastery 5 sem due review deixa a rota;
+- navegação Smart Coach → Learning Path;
 - conclusão end-to-end 12/12;
 - navegação e dados dos cinco modos da plataforma.
