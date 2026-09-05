@@ -58,7 +58,10 @@ class _PlayerProgressScreenState extends State<PlayerProgressScreen> {
             tooltip: 'Learning Analytics',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => LearningAnalyticsScreen(progress: progress),
+                builder: (_) => LearningAnalyticsScreen(
+                  progress: progress,
+                  progressStore: widget.progressStore,
+                ),
               ),
             ),
             icon: const Icon(Icons.insights_rounded),
