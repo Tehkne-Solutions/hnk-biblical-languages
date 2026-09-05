@@ -4,6 +4,7 @@ import '../content/learning_analytics.dart';
 import '../content/smart_coach.dart';
 import '../progress/biblical_progress.dart';
 import 'daily_session_screen.dart';
+import 'learning_path_screen.dart';
 
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
@@ -79,6 +80,20 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
     setState(() => _progress = refreshed);
   }
 
+  Future<void> _openLearningPath() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => LearningPathScreen(
+          initialProgress: _progress,
+          progressStore: widget.progressStore,
+        ),
+      ),
+    );
+    final refreshed = await widget.progressStore.load();
+    if (!mounted) return;
+    setState(() => _progress = refreshed);
+  }
+
   @override
   Widget build(BuildContext context) {
     final recommendation = buildSmartCoachRecommendation(_progress);
@@ -93,6 +108,13 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
         backgroundColor: _ink,
         foregroundColor: Colors.white,
         title: const Text('SMART COACH'),
+        actions: [
+          IconButton(
+            tooltip: 'Learning Path',
+            onPressed: _openLearningPath,
+            icon: const Icon(Icons.route_rounded),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
