@@ -51,6 +51,14 @@ class PracticeSessionRecord {
     required this.reviewCount,
     required this.newCount,
     required this.reinforcementCount,
+    this.coachSession = false,
+    this.coachBaseline = false,
+    this.coachTargetKey,
+    this.coachMode,
+    this.coachLessonNumbers = const <int>[],
+    this.coachFocusedItemCount = 0,
+    this.coachMasteryBefore,
+    this.coachMasteryAfter,
   });
 
   final DateTime completedAt;
@@ -62,9 +70,74 @@ class PracticeSessionRecord {
   final int reviewCount;
   final int newCount;
   final int reinforcementCount;
+  final bool coachSession;
+  final bool coachBaseline;
+  final String? coachTargetKey;
+  final int? coachMode;
+  final List<int> coachLessonNumbers;
+  final int coachFocusedItemCount;
+  final double? coachMasteryBefore;
+  final double? coachMasteryAfter;
 
   int get accuracy =>
       attempts == 0 ? 0 : ((correctAttempts / attempts) * 100).round();
+
+  double? get coachMasteryDelta {
+    final before = coachMasteryBefore;
+    final after = coachMasteryAfter;
+    if (before == null || after == null) return null;
+    return after - before;
+  }
+
+  PracticeSessionRecord withCoachOutcome({
+    required bool baseline,
+    required String targetKey,
+    required int mode,
+    required List<int> lessonNumbers,
+    required int focusedItemCount,
+    required double masteryBefore,
+    required double masteryAfter,
+  }) {
+    if (targetKey.trim().isEmpty) {
+      throw ArgumentError.value(targetKey, 'targetKey');
+    }
+    if (mode < 1 || mode > 6) {
+      throw RangeError.range(mode, 1, 6, 'mode');
+    }
+    if (focusedItemCount < 0 || focusedItemCount > itemCount) {
+      throw RangeError.range(focusedItemCount, 0, itemCount, 'focusedItemCount');
+    }
+    if (masteryBefore < 0 || masteryBefore > 5) {
+      throw RangeError.range(masteryBefore, 0, 5, 'masteryBefore');
+    }
+    if (masteryAfter < 0 || masteryAfter > 5) {
+      throw RangeError.range(masteryAfter, 0, 5, 'masteryAfter');
+    }
+    final normalizedLessons = lessonNumbers
+        .where((number) => number >= 1 && number <= 12)
+        .toSet()
+        .toList()
+      ..sort();
+    return PracticeSessionRecord(
+      completedAt: completedAt,
+      itemCount: itemCount,
+      attempts: attempts,
+      correctAttempts: correctAttempts,
+      xpGained: xpGained,
+      masteryImproved: masteryImproved,
+      reviewCount: reviewCount,
+      newCount: newCount,
+      reinforcementCount: reinforcementCount,
+      coachSession: true,
+      coachBaseline: baseline,
+      coachTargetKey: targetKey.trim(),
+      coachMode: mode,
+      coachLessonNumbers: List<int>.unmodifiable(normalizedLessons),
+      coachFocusedItemCount: focusedItemCount,
+      coachMasteryBefore: masteryBefore,
+      coachMasteryAfter: masteryAfter,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'completedAt': completedAt.toUtc().toIso8601String(),
@@ -76,9 +149,25 @@ class PracticeSessionRecord {
         'reviewCount': reviewCount,
         'newCount': newCount,
         'reinforcementCount': reinforcementCount,
+        if (coachSession) ...{
+          'coachSession': true,
+          'coachBaseline': coachBaseline,
+          'coachTargetKey': coachTargetKey,
+          'coachMode': coachMode,
+          'coachLessonNumbers': coachLessonNumbers,
+          'coachFocusedItemCount': coachFocusedItemCount,
+          'coachMasteryBefore': coachMasteryBefore,
+          'coachMasteryAfter': coachMasteryAfter,
+        },
       };
 
   factory PracticeSessionRecord.fromJson(Map<String, Object?> json) {
+    final coachSession = json['coachSession'] as bool? ?? false;
+    final rawTargetKey = '${json['coachTargetKey'] ?? ''}'.trim();
+    final rawMode = (json['coachMode'] as num?)?.toInt();
+    final rawLessons = json['coachLessonNumbers'] as List? ?? const [];
+    final before = (json['coachMasteryBefore'] as num?)?.toDouble();
+    final after = (json['coachMasteryAfter'] as num?)?.toDouble();
     return PracticeSessionRecord(
       completedAt: DateTime.tryParse('${json['completedAt'] ?? ''}')?.toUtc() ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
@@ -104,6 +193,33 @@ class PracticeSessionRecord {
           ((json['reinforcementCount'] as num?)?.toInt() ?? 0)
               .clamp(0, 864)
               .toInt(),
+      coachSession: coachSession,
+      coachBaseline: coachSession && (json['coachBaseline'] as bool? ?? false),
+      coachTargetKey:
+          coachSession && rawTargetKey.isNotEmpty ? rawTargetKey : null,
+      coachMode: coachSession && rawMode != null
+          ? rawMode.clamp(1, 6).toInt()
+          : null,
+      coachLessonNumbers: List<int>.unmodifiable(
+        rawLessons
+            .whereType<num>()
+            .map((value) => value.toInt())
+            .where((value) => value >= 1 && value <= 12)
+            .toSet()
+            .toList()
+          ..sort(),
+      ),
+      coachFocusedItemCount: coachSession
+          ? ((json['coachFocusedItemCount'] as num?)?.toInt() ?? 0)
+              .clamp(0, 864)
+              .toInt()
+          : 0,
+      coachMasteryBefore: coachSession && before != null
+          ? before.clamp(0.0, 5.0).toDouble()
+          : null,
+      coachMasteryAfter: coachSession && after != null
+          ? after.clamp(0.0, 5.0).toDouble()
+          : null,
     );
   }
 }
@@ -124,7 +240,7 @@ class BiblicalProgressSnapshot {
     this.updatedAt,
   });
 
-  static const int currentSchemaVersion = 3;
+  static const int currentSchemaVersion = 4;
   static const int maxMastery = 5;
   static const int maxSessionHistory = 90;
 
@@ -260,6 +376,33 @@ class BiblicalProgressSnapshot {
     return _copyWith(
       practiceSessions: List<PracticeSessionRecord>.unmodifiable(trimmed),
       updatedAt: eventAt,
+    );
+  }
+
+  BiblicalProgressSnapshot annotateLatestPracticeSessionWithCoach({
+    required bool baseline,
+    required String targetKey,
+    required int mode,
+    required List<int> lessonNumbers,
+    required int focusedItemCount,
+    required double masteryBefore,
+    required double masteryAfter,
+    DateTime? timestamp,
+  }) {
+    if (practiceSessions.isEmpty) return this;
+    final nextHistory = List<PracticeSessionRecord>.of(practiceSessions);
+    nextHistory[nextHistory.length - 1] = nextHistory.last.withCoachOutcome(
+      baseline: baseline,
+      targetKey: targetKey,
+      mode: mode,
+      lessonNumbers: lessonNumbers,
+      focusedItemCount: focusedItemCount,
+      masteryBefore: masteryBefore,
+      masteryAfter: masteryAfter,
+    );
+    return _copyWith(
+      practiceSessions: List<PracticeSessionRecord>.unmodifiable(nextHistory),
+      updatedAt: (timestamp ?? DateTime.now().toUtc()).toUtc(),
     );
   }
 
