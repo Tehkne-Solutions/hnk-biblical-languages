@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../content/learning_analytics.dart';
 import '../content/smart_coach.dart';
 import '../progress/biblical_progress.dart';
 import 'daily_session_screen.dart';
@@ -7,6 +8,7 @@ import 'daily_session_screen.dart';
 const _ink = Color(0xFF0F172A);
 const _blue = Color(0xFF0057D8);
 const _gold = Color(0xFFFFD166);
+const _green = Color(0xFF15803D);
 const _muted = Color(0xFF64748B);
 
 class SmartCoachScreen extends StatefulWidget {
@@ -36,6 +38,12 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
     final plan = buildSmartCoachSession(_progress, recommendation);
     if (plan.items.isEmpty || !mounted) return;
 
+    final masteryBefore = smartCoachFocusMastery(_progress, recommendation);
+    final focusedItemCount = smartCoachFocusedItemCount(plan, recommendation);
+    final previousSessionAt = _progress.practiceSessions.isEmpty
+        ? null
+        : _progress.practiceSessions.last.completedAt;
+
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => DailySessionScreen(
@@ -46,7 +54,27 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
       ),
     );
 
-    final refreshed = await widget.progressStore.load();
+    var refreshed = await widget.progressStore.load();
+    final latestSessionAt = refreshed.practiceSessions.isEmpty
+        ? null
+        : refreshed.practiceSessions.last.completedAt;
+    final completedNewSession =
+        latestSessionAt != null && latestSessionAt != previousSessionAt;
+
+    if (completedNewSession) {
+      final masteryAfter = smartCoachFocusMastery(refreshed, recommendation);
+      refreshed = refreshed.annotateLatestPracticeSessionWithCoach(
+        baseline: !recommendation.personalized,
+        targetKey: analyticsTargetKey(recommendation.target),
+        mode: recommendation.mode,
+        lessonNumbers: recommendation.lessonNumbers,
+        focusedItemCount: focusedItemCount,
+        masteryBefore: masteryBefore,
+        masteryAfter: masteryAfter,
+      );
+      await widget.progressStore.save(refreshed);
+    }
+
     if (!mounted) return;
     setState(() => _progress = refreshed);
   }
@@ -54,6 +82,7 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
   @override
   Widget build(BuildContext context) {
     final recommendation = buildSmartCoachRecommendation(_progress);
+    final outcome = buildLatestSmartCoachOutcome(_progress);
     final lessons = recommendation.lessonNumbers
         .map((number) => 'Lesson ${number.toString().padLeft(3, '0')}')
         .join(' · ');
@@ -135,6 +164,10 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
               ),
             ],
           ),
+          if (outcome != null) ...[
+            const SizedBox(height: 22),
+            _OutcomeCard(outcome: outcome),
+          ],
           const SizedBox(height: 22),
           Container(
             padding: const EdgeInsets.all(18),
@@ -160,8 +193,13 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
                   '2. O Coach prioriza drills já conhecidos do modo e idioma prescritos.\n'
                   '3. Apenas Lessons desbloqueadas entram no foco.\n'
                   '4. Se faltarem itens, a Daily Session canônica completa as vagas.\n'
-                  '5. XP, retry, mastery, histórico e spaced repetition continuam no mesmo motor.',
-                  style: TextStyle(color: _ink, height: 1.55, fontWeight: FontWeight.w700),
+                  '5. XP, retry, mastery, histórico e spaced repetition continuam no mesmo motor.\n'
+                  '6. Ao concluir, o Coach compara mastery antes/depois e recalcula a próxima decisão.',
+                  style: TextStyle(
+                    color: _ink,
+                    height: 1.55,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -191,6 +229,94 @@ class _SmartCoachScreenState extends State<SmartCoachScreen> {
             style: TextStyle(color: _muted, height: 1.45, fontSize: 12),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OutcomeCard extends StatelessWidget {
+  const _OutcomeCard({required this.outcome});
+
+  final SmartCoachOutcome outcome;
+
+  @override
+  Widget build(BuildContext context) {
+    final delta = outcome.masteryDelta;
+    final deltaLabel = '${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(2)}';
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFFECFDF3),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFF86EFAC)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'RESULTADO DA ÚLTIMA SESSÃO DO COACH',
+            style: TextStyle(
+              color: _green,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.1,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            outcome.decisionLabel,
+            style: const TextStyle(
+              color: _ink,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _SmallChip(
+                label:
+                    '${outcome.masteryBefore.toStringAsFixed(2)} → ${outcome.masteryAfter.toStringAsFixed(2)}',
+              ),
+              _SmallChip(label: 'Δ $deltaLabel'),
+              _SmallChip(label: '${outcome.session.accuracy}% acurácia'),
+              _SmallChip(
+                label: '${outcome.session.coachFocusedItemCount} itens de foco',
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            outcome.rationale,
+            style: const TextStyle(color: _ink, height: 1.45),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SmallChip extends StatelessWidget {
+  const _SmallChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: _ink,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
